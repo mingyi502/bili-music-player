@@ -1,0 +1,80 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "VecSongs": [
+        {
+          "Track": {
+            "id": 449205,
+            "mid": "003aAYrm3GE0Ac",
+            "name": "稻香",
+            "interval": 223,
+            "singer": [
+              {
+                "id": 4558,
+                "mid": "0025NhlN2yWrP4",
+                "name": "周杰伦"
+              }
+            ],
+            "album": {
+              "id": 36062,
+              "mid": "002Neh8l0uciQZ",
+              "name": "魔杰座"
+            },
+            "mv": {
+              "vid": "l0013kgn1be"
+            }
+          }
+        },
+        {
+          "Track": {
+            "id": 456300908,
+            "mid": "002lZaPy41hEN2",
+            "name": "我的歌声里",
+            "interval": 216,
+            "singer": [
+              {
+                "id": 11503725,
+                "mid": "000sUkRV49hC7B",
+                "name": "姜眠"
+              }
+            ],
+            "album": {
+              "id": 44668989,
+              "mid": "0045g0OL0Q4Zfq",
+              "name": "我的歌声里"
+            },
+            "mv": {
+              "vid": ""
+            }
+          }
+        },
+        {
+          "Track": {
+            "id": 1030353,
+            "mid": "004aJoYT3ia7al",
+            "name": "Letting Go",
+            "interval": 263,
+            "singer": [
+              {
+                "id": 112,
+                "mid": "000hNnWC3kko2c",
+                "name": "蔡健雅"
+              }
+            ],
+            "album": {
+              "id": 87747,
+              "mid": "001aC9dM35U6KB",
+              "name": "说到爱"
+            },
+            "mv": {
+              "vid": "d0024ro2pbh"
+            }
+          }
+        }
+      ],
+      "HasMore": true
+    }
+  }
+}

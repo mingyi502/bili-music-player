@@ -1,0 +1,3 @@
+Place a Firebase-generated `google-services.json` in this directory only when enabling Firebase/Push Notifications locally.
+
+Do not commit the real file. It is ignored by `android/.gitignore`.

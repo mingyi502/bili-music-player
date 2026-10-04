@@ -1,0 +1,85 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "VecSongs": [
+        {
+          "Track": {
+            "id": 449205,
+            "mid": "003aAYrm3GE0Ac",
+            "name": "稻香",
+            "interval": 223,
+            "singer": [
+              {
+                "id": 4558,
+                "mid": "0025NhlN2yWrP4",
+                "name": "周杰伦"
+              }
+            ],
+            "album": {
+              "id": 36062,
+              "mid": "002Neh8l0uciQZ",
+              "name": "魔杰座"
+            },
+            "mv": {
+              "vid": "l0013kgn1be"
+            }
+          }
+        },
+        {
+          "Track": {
+            "id": 510744977,
+            "mid": "001Jqdnn2GIcPo",
+            "name": "一个人想着一个人",
+            "interval": 189,
+            "singer": [
+              {
+                "id": 16592694,
+                "mid": "004KErVs1EsrnV",
+                "name": "艾比利"
+              }
+            ],
+            "album": {
+              "id": 54764266,
+              "mid": "004cGSXU3052Se",
+              "name": "一个人想着一个人（说唱版）"
+            },
+            "mv": {
+              "vid": "000lWjuO3zwsYR"
+            }
+          }
+        },
+        {
+          "Track": {
+            "id": 107600459,
+            "mid": "0012hyrb39mCYU",
+            "name": "We Don't Talk Anymore",
+            "interval": 254,
+            "singer": [
+              {
+                "id": 39000,
+                "mid": "000jnR7q3pCzYG",
+                "name": "Charlie Puth"
+              },
+              {
+                "id": 43197,
+                "mid": "0046fVNz3ruk2r",
+                "name": "Selena Gomez"
+              }
+            ],
+            "album": {
+              "id": 1509757,
+              "mid": "002nS8Wu3mMPLx",
+              "name": "We Don't Talk Anymore (Mr. Collipark Remix)"
+            },
+            "mv": {
+              "vid": ""
+            }
+          }
+        }
+      ],
+      "HasMore": true
+    }
+  }
+}

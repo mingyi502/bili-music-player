@@ -1,0 +1,87 @@
+{
+  "code": 0,
+  "data": {
+    "keyword": "晴天",
+    "priority": 0,
+    "qc": [],
+    "semantic": {
+      "curnum": 0,
+      "curpage": 2,
+      "list": [],
+      "totalnum": 0
+    },
+    "song": {
+      "curnum": 1,
+      "curpage": 2,
+      "list": [
+        {
+          "albumid": 20612,
+          "albummid": "003DFRzD192KKD",
+          "albumname": "七里香",
+          "albumname_hilight": "七里香",
+          "alertid": 41,
+          "chinesesinger": 0,
+          "docid": "13946252327248780224",
+          "grp": [],
+          "interval": 240,
+          "isonly": 1,
+          "lyric": "",
+          "lyric_hilight": "",
+          "msgid": 13,
+          "nt": 351319196,
+          "pay": {
+            "payalbum": 0,
+            "payalbumprice": 0,
+            "paydownload": 1,
+            "payinfo": 1,
+            "payplay": 1,
+            "paytrackmouth": 1,
+            "paytrackprice": 200
+          },
+          "preview": {
+            "trybegin": 60964,
+            "tryend": 94382,
+            "trysize": 960887
+          },
+          "pubtime": 1091462400,
+          "pure": 0,
+          "singer": [
+            {
+              "id": 4558,
+              "mid": "0025NhlN2yWrP4",
+              "name": "周杰伦",
+              "name_hilight": "周杰伦"
+            }
+          ],
+          "size128": 3843167,
+          "size320": 9607864,
+          "sizeape": 0,
+          "sizeflac": 26174554,
+          "sizeogg": 5218730,
+          "songid": 102065750,
+          "songmid": "001Bbywq2gicae",
+          "songname": "搁浅",
+          "songname_hilight": "搁浅",
+          "stream": 1,
+          "switch": 104193,
+          "t": 1,
+          "tag": 0,
+          "type": 0,
+          "ver": 0,
+          "vid": ""
+        }
+      ],
+      "totalnum": 600
+    },
+    "totaltime": 0,
+    "zhida": {
+      "chinesesinger": 0,
+      "type": 0
+    }
+  },
+  "message": "",
+  "notice": "",
+  "subcode": 0,
+  "time": 1790248922,
+  "tips": ""
+}

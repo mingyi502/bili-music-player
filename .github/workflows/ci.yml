@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建
+        run: npm run build
+
+      # 注意：不在此运行 npm run test:e2e。
+      # 它会访问腾讯 / B 站真实接口，容易触发风控，且需要本地服务处于运行状态。
+      # 请只在本地手动执行：npm run dev 后另开终端 npm run test:e2e
+      - name: 安全回归测试
+        run: npm run test:security
+      - name: 平台层回归测试
+        run: npm run test:platform

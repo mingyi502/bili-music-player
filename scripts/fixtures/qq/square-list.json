@@ -1,0 +1,213 @@
+{
+  "code": 0,
+  "data": {
+    "uin": 0,
+    "categoryId": 10000000,
+    "sortId": 5,
+    "sum": 11619,
+    "sin": 0,
+    "ein": 9,
+    "list": [
+      {
+        "dissid": "7707261125",
+        "createtime": "2020-09-06",
+        "commit_time": "2020-09-06",
+        "dissname": "甜度爆表 | 旋律说唱狙击少女心",
+        "imgurl": "http://qpic.y.qq.com/music_cover/s4SoBc0IrDEDpHKlDkDflKbCgbic5ldSQrdsEafqvxULdib5CvKhaibww/300?n=1",
+        "introduction": "",
+        "listennum": 8550752,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 3509852917,
+          "encrypt_uin": "oi4zNKckowE57z**",
+          "name": "我想要两颗西柚",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7578943835",
+        "createtime": "2020-05-27",
+        "commit_time": "2020-05-27",
+        "dissname": "丧系Rap丨渐渐不再期待任何东西",
+        "imgurl": "http://qpic.y.qq.com/music_cover/1Jcpjia5qaEibPyTuy709wFiapqHbxdewwwc5yBJI7NiaNMN9XDhUJPibJA/300?n=1",
+        "introduction": "",
+        "listennum": 1813869,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 1262377137,
+          "encrypt_uin": "oK-sowol7i6i7z**",
+          "name": "离妄.",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7729596131",
+        "createtime": "2020-09-28",
+        "commit_time": "2020-09-28",
+        "dissname": "耳机里的秘密 | 宝藏女声集合站",
+        "imgurl": "http://qpic.y.qq.com/music_cover/qhuJFHlwiayRp1rhWoJk9HaAkric2uNwiaX5vwuDF1mb4LgEId9z2eExg/300?n=1",
+        "introduction": "",
+        "listennum": 55494927,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 3,
+          "qq": 3413833718,
+          "encrypt_uin": "oiv5oicioiS5Nn**",
+          "name": "腾讯音乐人",
+          "isVip": 3,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7614366897",
+        "createtime": "2020-07-15",
+        "commit_time": "2020-07-15",
+        "dissname": "侠气古风 : 腰间两把刀！断和了",
+        "imgurl": "http://qpic.y.qq.com/music_cover/nKLrO3Sp1ctkpqK9rmuze9wmyUcyQV38GpUdnwYNkAyEUicTQ2dCBoA/300?n=1",
+        "introduction": "",
+        "listennum": 40784816,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 1841347563,
+          "encrypt_uin": "oKcPoKoP7i4soz**",
+          "name": "天份",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7426529126",
+        "createtime": "2020-07-20",
+        "commit_time": "2020-07-20",
+        "dissname": "「片段」你与星河皆不可及",
+        "imgurl": "http://qpic.y.qq.com/music_cover/LQ4zic8aEyNEreHko5rQ2a6S0JjhXjvoxzTWXvqiaZDDvJWlibGcCWa4g/300?n=1",
+        "introduction": "",
+        "listennum": 39440040,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 2300053617,
+          "encrypt_uin": "owozoenkoiC57z**",
+          "name": "屿汀",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "8165221528",
+        "createtime": "2021-09-22",
+        "commit_time": "2021-09-22",
+        "dissname": "心跳100%，请查收这个甜蜜惊喜",
+        "imgurl": "http://qpic.y.qq.com/music_cover/B2273uSn636GgXgN7l2m5aGaWYVibe0Gg8CUNwBHYOMN26T2CSMsTYQ/300?n=1",
+        "introduction": "",
+        "listennum": 22334558,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 3503191916,
+          "encrypt_uin": "oi4zoi6qoKE57c**",
+          "name": "猛犸文化",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "8081864568",
+        "createtime": "2021-07-20",
+        "commit_time": "2021-07-20",
+        "dissname": "放空冥想丨解开脑海里的弦",
+        "imgurl": "http://qpic.y.qq.com/music_cover/icF4iau8Sj7b1judxoK8Mf70sxhVkvWpMRxCkokYqWaxndibYq2TjE2kQ/300?n=1",
+        "introduction": "",
+        "listennum": 4937001,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 49174460,
+          "encrypt_uin": "7eE57ivP7wn*",
+          "name": "一鱼",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7798009869",
+        "createtime": "2021-04-30",
+        "commit_time": "2021-04-30",
+        "dissname": "爱而不得的时候，再爱就不礼貌啦",
+        "imgurl": "http://qpic.y.qq.com/music_cover/q4RY3dXkmLmSIsPMtBBa8JwxtvaPW1I4lgMHiaqAyqy2eZtOeuDcbBw/300?n=1",
+        "introduction": "",
+        "listennum": 48191763,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 2962947859,
+          "encrypt_uin": "owEsowEP7ickNv**",
+          "name": "BcaI",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "2968769762",
+        "createtime": "2017-08-10",
+        "commit_time": "2017-08-10",
+        "dissname": "90后的独家记忆，那些熟悉的旋律",
+        "imgurl": "http://p.qpic.cn/music_cover/uBpXolCGC2PDJrXCEJeeZica8sugdAXKg650mNBYOB84WsKaAnl4Oiaw/600?n=1",
+        "introduction": "",
+        "listennum": 111231783,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 2,
+          "qq": 3079672397,
+          "encrypt_uin": "oinlNKClowoq7z**",
+          "name": "良辰美景",
+          "isVip": 2,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      },
+      {
+        "dissid": "7712614773",
+        "createtime": "2020-09-12",
+        "commit_time": "2020-09-12",
+        "dissname": "伤感片段 | 太热情总是不被珍惜",
+        "imgurl": "http://qpic.y.qq.com/music_cover/CqQEEJw92zhQfQqrXdZCVMecjxwBawibnMXZMdFPLHiaG4SDFtnKbTEw/300?n=1",
+        "introduction": "",
+        "listennum": 24454257,
+        "score": 0,
+        "version": 0,
+        "creator": {
+          "type": 0,
+          "qq": 2240563960,
+          "encrypt_uin": "ow-Poe4soiEson**",
+          "name": "北北.",
+          "isVip": 0,
+          "avatarUrl": "",
+          "followflag": 0
+        }
+      }
+    ]
+  }
+}

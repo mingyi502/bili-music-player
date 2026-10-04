@@ -1,0 +1,15 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "sip": ["https://isure.stream.qqmusic.qq.com/"],
+      "midurlinfo": [
+        {
+          "songmid": "004Z8Ihr0JIu5s",
+          "purl": "C400004Z8Ihr0JIu5s.m4a?vkey=FAKEVKEYFORTEST&guid=1234567890&uin=10000&fromtag=66"
+        }
+      ]
+    }
+  }
+}

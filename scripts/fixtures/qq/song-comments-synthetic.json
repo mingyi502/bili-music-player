@@ -1,0 +1,49 @@
+{
+  "code": 0,
+  "morecomment": 1,
+  "hot_comment": {
+    "commentlist": [
+      {
+        "commentid": "fixture-hot-001",
+        "nick": "示例用户A",
+        "avatarurl": "",
+        "rootcommentcontent": "这是一条用于测试热评解析的合成内容。",
+        "praisenum": 2612,
+        "time": 1700000000,
+        "is_hot": 1
+      },
+      {
+        "commentid": "fixture-hot-002",
+        "nick": "示例用户B",
+        "avatarurl": "",
+        "rootcommentcontent": "第二条合成热评，用于验证长文本和点赞数映射。",
+        "praisenum": 860,
+        "time": 1700000100,
+        "is_hot": 1
+      }
+    ]
+  },
+  "comment": {
+    "commentlist": [
+      {
+        "commentid": "fixture-latest-001",
+        "nick": "测试评论者1",
+        "avatarurl": "",
+        "rootcommentcontent": "最新评论样本一。",
+        "praisenum": 0,
+        "time": 1700000200,
+        "is_hot": 0
+      },
+      {
+        "commentid": "fixture-latest-002",
+        "nick": "测试评论者2",
+        "avatarurl": "",
+        "rootcommentcontent": "最新评论样本二。",
+        "praisenum": 0,
+        "time": 1700000300,
+        "is_hot": 0
+      }
+    ],
+    "commenttotal": 230665
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "basicInfo": {
+        "albumMid": "0024bjiL2aocxT",
+        "albumName": "十一月的萧邦",
+        "tranName": "November's Chopin",
+        "publishDate": "2005-11-01",
+        "desc": "⊙今年迟了一点 但是 感觉多了一点…\n\n周杰伦2005最新国语专辑「11月的萧邦」\n\n§浪漫古典因子谱出音乐新诗篇§\n\n每年夏天，大家似乎都很习惯有周杰伦的音乐相伴，2005年的夏天，周杰伦并没有如同以往的发片，这不是缺席，而是希望音乐在制",
+        "genre": "",
+        "language": "国语",
+        "albumID": 60671,
+        "pmid": "0024bjiL2aocxT_5",
+        "albumType": "录音室专辑"
+      },
+      "company": {
+        "name": "杰威尔音乐有限公司"
+      },
+      "singer": {
+        "singerList": [
+          {
+            "singerMid": "0025NhlN2yWrP4",
+            "singerName": "周杰伦"
+          }
+        ]
+      }
+    }
+  }
+}

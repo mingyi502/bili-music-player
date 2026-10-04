@@ -1,0 +1,116 @@
+{
+  "code": 0,
+  "data": {
+    "categories": [
+      {
+        "categoryGroupName": "热门",
+        "items": [
+          {
+            "categoryId": 10000000,
+            "categoryName": "全部",
+            "usable": 0,
+            "allsorts": [
+              {
+                "sortId": 2,
+                "sortName": "最新"
+              },
+              {
+                "sortId": 3,
+                "sortName": "最热"
+              },
+              {
+                "sortId": 4,
+                "sortName": "评分"
+              },
+              {
+                "sortId": 1,
+                "sortName": "默认"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "categoryGroupName": "流派",
+        "items": [
+          {
+            "categoryId": 6,
+            "categoryName": "流行",
+            "usable": 1,
+            "allsorts": [
+              {
+                "sortId": 2,
+                "sortName": "最新"
+              },
+              {
+                "sortId": 3,
+                "sortName": "最热"
+              },
+              {
+                "sortId": 4,
+                "sortName": "评分"
+              }
+            ]
+          },
+          {
+            "categoryId": 15,
+            "categoryName": "轻音乐",
+            "usable": 1,
+            "allsorts": [
+              {
+                "sortId": 2,
+                "sortName": "最新"
+              },
+              {
+                "sortId": 3,
+                "sortName": "最热"
+              },
+              {
+                "sortId": 4,
+                "sortName": "评分"
+              }
+            ]
+          },
+          {
+            "categoryId": 11,
+            "categoryName": "摇滚",
+            "usable": 1,
+            "allsorts": [
+              {
+                "sortId": 2,
+                "sortName": "最新"
+              },
+              {
+                "sortId": 3,
+                "sortName": "最热"
+              },
+              {
+                "sortId": 4,
+                "sortName": "评分"
+              }
+            ]
+          },
+          {
+            "categoryId": 28,
+            "categoryName": "民谣",
+            "usable": 1,
+            "allsorts": [
+              {
+                "sortId": 2,
+                "sortName": "最新"
+              },
+              {
+                "sortId": 3,
+                "sortName": "最热"
+              },
+              {
+                "sortId": 4,
+                "sortName": "评分"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

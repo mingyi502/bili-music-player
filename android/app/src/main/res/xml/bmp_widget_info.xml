@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 桌面小组件（H3）：4x1 迷你播放条 -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="40dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_mini"
+    android:previewLayout="@layout/widget_mini"
+    android:resizeMode="horizontal"
+    android:widgetCategory="home_screen" />

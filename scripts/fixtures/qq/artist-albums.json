@@ -1,0 +1,30 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "singerMid": "0025NhlN2yWrP4",
+      "total": 43,
+      "albumList": [
+        {
+          "albumMid": "003RMaRI1iFoYd",
+          "albumName": "周杰伦的床边故事",
+          "albumTranName": "Jay Chou's Bedtime Stories",
+          "publishDate": "2016-06-24",
+          "totalNum": 0,
+          "albumID": 1458791,
+          "singerName": "周杰伦"
+        },
+        {
+          "albumMid": "002eFUFm2XYZ7z",
+          "albumName": "我很忙",
+          "albumTranName": "On The Run!",
+          "publishDate": "2007-11-02",
+          "totalNum": 0,
+          "albumID": 33021,
+          "singerName": "周杰伦"
+        }
+      ]
+    }
+  }
+}

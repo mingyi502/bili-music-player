@@ -1,0 +1,66 @@
+{
+  "code": 0,
+  "subcode": 0,
+  "message": "",
+  "default": 0,
+  "data": {
+    "display_num": 951973,
+    "list": [
+      {
+        "copyrightnum": 26,
+        "createtime": "2019-11-01",
+        "creator": {
+          "avatarUrl": "",
+          "creator_uin": "2783429033",
+          "encrypt_uin": "owSFoivANKnioz**",
+          "followflag": 0,
+          "isVip": 0,
+          "name": "QQ音乐官方歌单",
+          "qq": 2783429033,
+          "singerid": 0,
+          "singermid": "",
+          "type": 6
+        },
+        "diss_status": 410,
+        "dissid": "7280525088",
+        "dissname": "华语&#124;&#32;修复心情",
+        "docid": 2985557792,
+        "imgurl": "http://qpic.y.qq.com/music_cover/7vlTTvwBiaibKJpyXffTHicMkQYK3ETibNGLI6ZORR0L0dt6icM4bDCprHA/300",
+        "introduction": "听一些好听的歌，愿这些美妙的音符，能够修复一下你的心情。",
+        "listennum": 9847747,
+        "score": 0,
+        "song_count": 27
+      },
+      {
+        "copyrightnum": 28,
+        "createtime": "2019-10-28",
+        "creator": {
+          "avatarUrl": "",
+          "creator_uin": "2783429033",
+          "encrypt_uin": "owSFoivANKnioz**",
+          "followflag": 0,
+          "isVip": 0,
+          "name": "QQ音乐官方歌单",
+          "qq": 2783429033,
+          "singerid": 0,
+          "singermid": "",
+          "type": 6
+        },
+        "diss_status": 410,
+        "dissid": "7275588893",
+        "dissname": "华语&#124;&#32;莫问前路",
+        "docid": 2980621597,
+        "imgurl": "http://qpic.y.qq.com/music_cover/7vlTTvwBiaibKJpyXffTHicMqRSrnT1E0BDxDne2mJoPyIX1KwDpTE17w/300",
+        "introduction": "出发吧，莫问前路，未来见",
+        "listennum": 8338511,
+        "score": 0,
+        "song_count": 29
+      }
+    ],
+    "num_per_page": 2,
+    "page_no": 0,
+    "qc": [],
+    "sum": 951973,
+    "uin": 0
+  }
+}

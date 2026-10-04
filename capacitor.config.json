@@ -1,0 +1,13 @@
+{
+  "appId": "com.bilimusic.player",
+  "appName": "bili-music-player",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": false
+    }
+  }
+}

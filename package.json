@@ -1,0 +1,65 @@
+{
+  "name": "bili-music-player",
+  "private": true,
+  "version": "1.0.0",
+  "description": "非官方本地音乐播放器：导入 QQ 音乐歌单 / 我喜欢 / 收藏专辑，自动匹配哔哩哔哩音源播放。",
+  "license": "MIT",
+  "author": "mingyi502",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mingyi502/bili-music-player-public.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mingyi502/bili-music-player-public/issues"
+  },
+  "homepage": "https://github.com/mingyi502/bili-music-player-public#readme",
+  "keywords": [
+    "music-player",
+    "bilibili",
+    "qqmusic",
+    "vue3",
+    "vite",
+    "unofficial"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "vite --open",
+    "dev": "vite",
+    "build": "vite build",
+    "build:android": "vite build --mode capacitor",
+    "cap:add:android": "cap add android",
+    "cap:sync": "npm run build:android && cap sync",
+    "cap:open": "cap open android",
+    "cap:run": "npm run build:android && cap run android",
+    "preview": "vite preview --open",
+    "test:e2e": "node scripts/e2e-test.mjs",
+    "test:platform": "node scripts/platform-test.mjs",
+    "test:security": "node scripts/security-regression-test.mjs",
+    "test:ui": "node scripts/browser-test.mjs",
+    "test:ui:authed": "node scripts/browser-test.mjs --logged-in",
+    "test:ui:locked": "node scripts/browser-test.mjs --locked",
+    "test:ui:mobile": "node scripts/browser-test.mjs --mobile",
+    "test:ui:demo": "node scripts/browser-test.mjs --logged-in --demo",
+    "test:ui:mobile:demo": "node scripts/browser-test.mjs --mobile --logged-in --demo"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/clipboard": "^8.0.1",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/file-transfer": "^2.0.5",
+    "@capacitor/filesystem": "^8.1.3",
+    "@capacitor/share": "^8.0.2",
+    "blueimp-md5": "^2.19.0",
+    "qrcode": "^1.5.4",
+    "vue": "^3.4.38",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "vite": "^7.3.6"
+  }
+}

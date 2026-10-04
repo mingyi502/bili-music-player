@@ -1,0 +1,57 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "retcode": 0,
+      "vecSong": [
+        {
+          "track": {
+            "id": 5646,
+            "mid": "003PSWcB4EDl6P",
+            "name": "开始懂了",
+            "interval": 271,
+            "singer": [
+              {
+                "id": 109,
+                "mid": "001pWERg3vFgg8",
+                "name": "孙燕姿"
+              }
+            ],
+            "album": {
+              "id": 493,
+              "mid": "004KRIQr1oCp2A",
+              "name": "我要的幸福"
+            },
+            "mv": {
+              "vid": "s0012es3fu7"
+            }
+          }
+        },
+        {
+          "track": {
+            "id": 7688,
+            "mid": "001PZner13Thcg",
+            "name": "怎样",
+            "interval": 271,
+            "singer": [
+              {
+                "id": 154,
+                "mid": "0012mAqa27UcEi",
+                "name": "戴佩妮"
+              }
+            ],
+            "album": {
+              "id": 608,
+              "mid": "001krp0227tOlb",
+              "name": "怎样"
+            },
+            "mv": {
+              "vid": "m0026h8q4vc"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

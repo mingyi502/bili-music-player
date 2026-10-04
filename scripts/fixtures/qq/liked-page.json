@@ -1,0 +1,30 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "total": 2,
+      "hasmore": 0,
+      "songlist": [
+        {
+          "id": 1001,
+          "mid": "004Z8Ihr0JIu5s",
+          "name": "晴天",
+          "singer": [{ "id": 1, "mid": "0025NhlN2yWrP4", "name": "周杰伦" }],
+          "album": { "id": 1, "mid": "002MAeob3zLXwZ", "name": "叶惠美" },
+          "interval": 269,
+          "mv": { "vid": "" }
+        },
+        {
+          "id": 1002,
+          "mid": "001yS0W31QLFns",
+          "name": "稻香",
+          "singer": [{ "id": 1, "mid": "0025NhlN2yWrP4", "name": "周杰伦" }],
+          "album": { "id": 2, "mid": "003aAYrm3GE0Ac", "name": "魔杰座" },
+          "interval": 223,
+          "mv": { "vid": "" }
+        }
+      ]
+    }
+  }
+}

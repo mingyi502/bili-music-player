@@ -1,0 +1,53 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "group": [
+        {
+          "groupName": "巅峰榜",
+          "toplist": [
+            {
+              "topId": 62,
+              "title": "飙升榜",
+              "titleDetail": "飙升榜 第267天",
+              "updateTime": "2026-09-24",
+              "period": "2026-09-24",
+              "listenNum": 18633712,
+              "totalNum": 100,
+              "headPicUrl": "http://y.gtimg.cn/music/photo_new/T003R500x500M000000fVAtz0QSleV.jpg",
+              "frontPicUrl": "http://y.gtimg.cn/music/photo_new/T003R300x300M000004Ex7Qt3behat.jpg"
+            },
+            {
+              "topId": 26,
+              "title": "热歌榜",
+              "titleDetail": "热歌榜 第267天",
+              "updateTime": "2026-09-24",
+              "period": "2026-09-24",
+              "listenNum": 19600000,
+              "totalNum": 300,
+              "headPicUrl": "http://y.gtimg.cn/music/photo_new/T003R500x500M000001D27UO0RYp7V.jpg",
+              "frontPicUrl": "http://y.gtimg.cn/music/photo_new/T003R300x300M000003lhcHY3nH1K2.jpg"
+            }
+          ]
+        },
+        {
+          "groupName": "地区榜",
+          "toplist": [
+            {
+              "topId": 5,
+              "title": "内地榜",
+              "titleDetail": "内地榜 第39周",
+              "updateTime": "2026-09-24",
+              "period": "2026_39",
+              "listenNum": 1409345,
+              "totalNum": 100,
+              "headPicUrl": "http://y.gtimg.cn/music/photo_new/T003R500x500M000003sQ30m4fNfQM.jpg",
+              "frontPicUrl": "http://y.gtimg.cn/music/photo_new/T003R300x300M000004NGnAy2pNEZI.jpg"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "data": {
+        "topId": 26,
+        "title": "热歌榜",
+        "titleDetail": "热歌榜 第267天",
+        "intro": "1.榜单定义：QQ音乐站内播放热度前300首歌曲。<br>2.更新频率：每日更新。<br>3.排序依据：按照歌曲在QQ音乐移动端登录用户中产生的完整播放，下载数，收藏数综合热度进行排名。",
+        "period": "2026-09-24",
+        "updateTime": "2026-09-24",
+        "listenNum": 19600000,
+        "totalNum": 300,
+        "headPicUrl": "http://y.gtimg.cn/music/photo_new/T003R500x500M000001D27UO0RYp7V.jpg",
+        "frontPicUrl": "http://y.gtimg.cn/music/photo_new/T003R300x300M000003lhcHY3nH1K2.jpg",
+        "song": [
+          {
+            "rank": 1,
+            "rankType": 3,
+            "rankValue": "0",
+            "songId": 4936030,
+            "albumMid": "002iWKlh2DcjFL",
+            "title": "茶汤",
+            "singerName": "郁可唯",
+            "singerMid": "000NUoMp2WAEpO",
+            "cover": "https://y.gtimg.cn/music/photo_new/T002R300x300M000002iWKlh2DcjFL_2.jpg"
+          },
+          {
+            "rank": 2,
+            "rankType": 3,
+            "rankValue": "0",
+            "songId": 8136,
+            "albumMid": "004VSvF52mQoQp",
+            "title": "我不难过",
+            "singerName": "孙燕姿",
+            "singerMid": "001pWERg3vFgg8",
+            "cover": "https://y.gtimg.cn/music/photo_new/T002R300x300M000004VSvF52mQoQp_5.jpg"
+          },
+          {
+            "rank": 3,
+            "rankType": 1,
+            "rankValue": "1",
+            "songId": 696262512,
+            "albumMid": "00446QRA1fTdqA",
+            "title": "甲乙丙丁 (你我怎么两清)",
+            "singerName": "李佳薇",
+            "singerMid": "0026IlCw2uKeZi",
+            "cover": "https://y.gtimg.cn/music/photo_new/T002R300x300M00000446QRA1fTdqA_2.jpg"
+          }
+        ]
+      },
+      "songInfoList": [
+        {
+          "id": 4936030,
+          "mid": "0027rBks3lqPA3",
+          "name": "茶汤",
+          "interval": 308,
+          "singer": [
+            {
+              "id": 19624,
+              "mid": "000NUoMp2WAEpO",
+              "name": "郁可唯"
+            }
+          ],
+          "album": {
+            "id": 96836,
+            "mid": "002iWKlh2DcjFL",
+            "name": "微加幸福-微笑幸福庆功版"
+          },
+          "mv": {
+            "vid": "g0090J2cwr9"
+          }
+        },
+        {
+          "id": 8136,
+          "mid": "001fsNdn1zuZnA",
+          "name": "我不难过",
+          "interval": 320,
+          "singer": [
+            {
+              "id": 109,
+              "mid": "001pWERg3vFgg8",
+              "name": "孙燕姿"
+            }
+          ],
+          "album": {
+            "id": 585,
+            "mid": "004VSvF52mQoQp",
+            "name": "未完成"
+          },
+          "mv": {
+            "vid": "W0090PSvwtp"
+          }
+        },
+        {
+          "id": 696262512,
+          "mid": "002AZauQ1UKQxe",
+          "name": "甲乙丙丁 (你我怎么两清)",
+          "interval": 210,
+          "singer": [
+            {
+              "id": 32169,
+              "mid": "0026IlCw2uKeZi",
+              "name": "李佳薇"
+            }
+          ],
+          "album": {
+            "id": 96350322,
+            "mid": "00446QRA1fTdqA",
+            "name": "甲乙丙丁"
+          },
+          "mv": {
+            "vid": "002LY1bM2uks1Y"
+          }
+        }
+      ]
+    }
+  }
+}

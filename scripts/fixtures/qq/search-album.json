@@ -1,0 +1,51 @@
+{
+  "code": 0,
+  "data": {
+    "album": {
+      "curnum": 2,
+      "curpage": 1,
+      "list": [
+        {
+          "albumID": 8220,
+          "albumMID": "000MkMni19ClKG",
+          "albumName": "叶惠美",
+          "albumName_hilight": "叶惠美",
+          "docid": "12255898198876076341",
+          "publicTime": "2003-07-31",
+          "singerID": 4558,
+          "singerMID": "0025NhlN2yWrP4",
+          "singerName": "周杰伦",
+          "singerName_hilight": "周杰伦",
+          "type": 0
+        },
+        {
+          "albumID": 9812595,
+          "albumMID": "000SZnEN36HVRI",
+          "albumName": "叶惠美",
+          "albumName_hilight": "叶惠美",
+          "docid": "15902166797182764362",
+          "publicTime": "2019-12-26",
+          "singerID": 203064,
+          "singerMID": "003zk4SO1NYkqp",
+          "singerName": "夜未央;小可",
+          "singerName_hilight": "夜未央;小可",
+          "type": 0
+        }
+      ],
+      "totalnum": 48
+    },
+    "keyword": "叶惠美",
+    "priority": 0,
+    "qc": [],
+    "totaltime": 0,
+    "zhida": {
+      "chinesesinger": 0,
+      "type": 0
+    }
+  },
+  "message": "",
+  "notice": "",
+  "subcode": 0,
+  "time": 1790248922,
+  "tips": ""
+}

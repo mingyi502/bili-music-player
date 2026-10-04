@@ -1,0 +1,10 @@
+{
+  "code": 0,
+  "data": {
+    "disslist": [
+      { "diss_name": "我喜欢", "tid": 111111, "dirid": 201, "dir_show": 0, "song_cnt": 2, "diss_cover": "" },
+      { "diss_name": "我的自建歌单", "tid": 7011264340, "dirid": 3, "dir_show": 1, "song_cnt": 12, "diss_cover": "" },
+      { "diss_name": "QZone背景音乐", "tid": 0, "dirid": 205, "dir_show": 0, "song_cnt": 0, "diss_cover": "" }
+    ]
+  }
+}

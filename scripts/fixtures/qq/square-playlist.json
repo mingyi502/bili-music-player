@@ -1,0 +1,95 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "code": 0,
+      "dirinfo": {
+        "id": 7707261125,
+        "title": "甜度爆表 | 旋律说唱狙击少女心",
+        "picurl": "https://qpic.y.qq.com/music_cover/s4SoBc0IrDEDpHKlDkDflKbCgbic5ldSQrdsEafqvxULdib5CvKhaibww/600",
+        "desc": "不怕rapper有文化，就怕rapper说情话。甜系说唱真的太可啦！",
+        "songnum": 3,
+        "listennum": 8550845,
+        "host_nick": "",
+        "mtime": 1632841193
+      },
+      "songlist_size": 3,
+      "songlist": [
+        {
+          "id": 127404639,
+          "mid": "002xTzGb2UBQRk",
+          "name": "你的",
+          "interval": 163,
+          "singer": [
+            {
+              "id": 1569887,
+              "mid": "003xfLpu4CFSUP",
+              "name": "DouDou"
+            },
+            {
+              "id": 1441201,
+              "mid": "004UQ7zJ09eOoj",
+              "name": "Viva宋佩豫"
+            }
+          ],
+          "album": {
+            "id": 9583515,
+            "mid": "0023VbHy1oT80v",
+            "name": "你的"
+          },
+          "mv": {
+            "vid": ""
+          }
+        },
+        {
+          "id": 213730498,
+          "mid": "001PfID21QGDh3",
+          "name": "Dawn of us",
+          "interval": 179,
+          "singer": [
+            {
+              "id": 179603,
+              "mid": "00216fJA496xQG",
+              "name": "王嘉尔"
+            }
+          ],
+          "album": {
+            "id": 4015423,
+            "mid": "0014u7SS0oiI3h",
+            "name": "Dawn of us"
+          },
+          "mv": {
+            "vid": "h00265b4j17"
+          }
+        },
+        {
+          "id": 311979893,
+          "mid": "001QrdVv3mPboI",
+          "name": "爱情慢慢来",
+          "interval": 195,
+          "singer": [
+            {
+              "id": 7872370,
+              "mid": "0045Ju280xswv7",
+              "name": "Stake"
+            },
+            {
+              "id": 4971280,
+              "mid": "000cZc0f4Ju7z7",
+              "name": "TwoP"
+            }
+          ],
+          "album": {
+            "id": 19912850,
+            "mid": "001oPdTa25uUfs",
+            "name": "爱情慢慢来"
+          },
+          "mv": {
+            "vid": ""
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "singer_info": {
+        "area": 0,
+        "genre": 0,
+        "other_name": "",
+        "id": 4558,
+        "mid": "0025NhlN2yWrP4",
+        "name": "周杰伦",
+        "fans": 50784337
+      },
+      "singer_brief": "周杰伦，英文名字JayChou，七九年出生的他早在念淡江中学音乐科时上“超级新人王”，就被主持人吴宗宪相中而签约。十八岁那年就交出不少亮眼的作品，包括吴宗宪的《屋顶》、王力宏的《打开爱》等。 周杰伦一出场给人一种爱耍酷的感觉，不喜与媒体亲近",
+      "total_song": 1012,
+      "total_album": 43,
+      "total_mv": 808,
+      "songlist": [
+        {
+          "id": 97773,
+          "mid": "0039MnYb0qxYhV",
+          "name": "晴天",
+          "interval": 269,
+          "singer": [
+            {
+              "id": 4558,
+              "mid": "0025NhlN2yWrP4",
+              "name": "周杰伦"
+            }
+          ],
+          "album": {
+            "id": 8220,
+            "mid": "000MkMni19ClKG",
+            "name": "叶惠美"
+          },
+          "mv": {
+            "vid": "w0026q7f01a"
+          }
+        },
+        {
+          "id": 102065750,
+          "mid": "001Bbywq2gicae",
+          "name": "搁浅",
+          "interval": 240,
+          "singer": [
+            {
+              "id": 4558,
+              "mid": "0025NhlN2yWrP4",
+              "name": "周杰伦"
+            }
+          ],
+          "album": {
+            "id": 20612,
+            "mid": "003DFRzD192KKD",
+            "name": "七里香"
+          },
+          "mv": {
+            "vid": "x00135ao69x"
+          }
+        },
+        {
+          "id": 718477,
+          "mid": "001zMQr71F1Qo8",
+          "name": "夜曲",
+          "interval": 226,
+          "singer": [
+            {
+              "id": 4558,
+              "mid": "0025NhlN2yWrP4",
+              "name": "周杰伦"
+            }
+          ],
+          "album": {
+            "id": 60671,
+            "mid": "0024bjiL2aocxT",
+            "name": "十一月的萧邦"
+          },
+          "mv": {
+            "vid": "T0010Rcobut"
+          }
+        }
+      ]
+    }
+  }
+}

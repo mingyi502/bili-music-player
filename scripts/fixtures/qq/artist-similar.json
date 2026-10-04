@@ -1,0 +1,40 @@
+{
+  "code": 0,
+  "req_0": {
+    "code": 0,
+    "data": {
+      "singerlist": [
+        {
+          "singerId": 245,
+          "singerMid": "0010PLKl2Wgolz",
+          "singerName": "F.I.R.飞儿乐团",
+          "singerPic": "http://y.gtimg.cn/music/photo_new/T001R150x150M0000010PLKl2Wgolz.jpg"
+        },
+        {
+          "singerId": 265,
+          "singerMid": "001JDzPT3JdvqK",
+          "singerName": "王力宏",
+          "singerPic": "http://y.gtimg.cn/music/photo_new/T001R150x150M000001JDzPT3JdvqK.jpg"
+        },
+        {
+          "singerId": 4351,
+          "singerMid": "003vyG9q2klWs4",
+          "singerName": "范玮琪",
+          "singerPic": "http://y.gtimg.cn/music/photo_new/T001R150x150M000003vyG9q2klWs4.jpg"
+        },
+        {
+          "singerId": 227,
+          "singerMid": "0027pdHE4STooO",
+          "singerName": "蔡依林",
+          "singerPic": "http://y.gtimg.cn/music/photo_new/T001R150x150M0000027pdHE4STooO.jpg"
+        },
+        {
+          "singerId": 60505,
+          "singerMid": "000aHmbL2aPXWH",
+          "singerName": "李荣浩",
+          "singerPic": "http://y.gtimg.cn/music/photo_new/T001R150x150M000000aHmbL2aPXWH.jpg"
+        }
+      ]
+    }
+  }
+}

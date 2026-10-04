@@ -1,0 +1,38 @@
+# 依赖与构建产物
+node_modules
+dist
+.vite
+.vite-temp
+
+# 待分发的 APK（本地打包产物，不进仓库）
+release
+
+# 本机环境交接文档（含设备/代理等机器信息，不进仓库）
+HANDOVER-LOCAL.md
+
+# 环境变量与本地配置
+.env
+.env.*
+*.local
+
+# 本地测试用的登录 Cookie（严禁提交）
+.tmp-cookie.txt
+*.cookie
+
+# 局域网模式已授权令牌（本地状态，便于重启后手机免输口令）
+.bmp-sessions.json
+
+# 日志
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 编辑器 / 系统
+phone-*.png
+.idea
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+desktop.ini
