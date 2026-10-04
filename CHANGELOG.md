@@ -76,5 +76,5 @@
 - 服务端仅监听 `127.0.0.1`；图片/音频代理带域名白名单与重定向校验
 - 服务端详细日志默认关闭（`QQ_DEBUG=1` 开启）
 
-[1.0.0]: https://github.com/mingyi502/bili-music-player-public/releases/tag/v1.0.0
-[0.1.0]: https://github.com/mingyi502/bili-music-player-public/releases/tag/v0.1.0
+[1.0.0]: https://github.com/mingyi502/bili-music-player/releases/tag/v1.0.0
+[0.1.0]: https://github.com/mingyi502/bili-music-player/releases/tag/v0.1.0

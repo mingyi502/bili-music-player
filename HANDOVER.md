@@ -15,7 +15,7 @@
 
 | 项 | 值 |
 |---|---|
-| 仓库 | https://github.com/mingyi502/bili-music-player-public |
+| 仓库 | https://github.com/mingyi502/bili-music-player |
 | 许可 / 作者 | MIT / mingyi502 |
 | 技术栈 | Vue 3.4 + Vite 7.3 + blueimp-md5；Android 用 Capacitor 8 |
 | Capacitor 依赖 | core/android 8.5.2、filesystem 8.1.3、file-transfer 2.0.5、clipboard 8.0.1 |

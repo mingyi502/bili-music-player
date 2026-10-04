@@ -7,12 +7,12 @@
   "author": "mingyi502",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mingyi502/bili-music-player-public.git"
+    "url": "git+https://github.com/mingyi502/bili-music-player.git"
   },
   "bugs": {
-    "url": "https://github.com/mingyi502/bili-music-player-public/issues"
+    "url": "https://github.com/mingyi502/bili-music-player/issues"
   },
-  "homepage": "https://github.com/mingyi502/bili-music-player-public#readme",
+  "homepage": "https://github.com/mingyi502/bili-music-player#readme",
   "keywords": [
     "music-player",
     "bilibili",
