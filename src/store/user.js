@@ -33,6 +33,9 @@ export async function loginWithSession(session) {
   state.likedCount = 0
   state.likedTotal = 0
   state.musicLoaded = false
+  state.fav.map = {}
+  state.fav.pending = {}
+  state.fav.liked = {}
   state.matches = {}
   persistMatches()
   resetQueue()
@@ -103,6 +106,9 @@ export async function logout() {
   state.player.source = 'none'
   state.player.currentTime = 0
   state.player.duration = 0
+  state.fav.map = {}
+  state.fav.pending = {}
+  state.fav.liked = {}
   state.matches = {}
   persistMatches()
   resetQueue()

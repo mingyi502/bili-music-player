@@ -19,8 +19,8 @@ import NowPlaying from './components/NowPlaying.vue'
 import Toasts from './components/Toasts.vue'
 import Icon from './components/Icon.vue'
 import { state, restoreSession, initAuth, closeSidebar, openSidebar, openQueue, closeQueue, toast } from './store/index'
+import { isFirstLevelPath } from './utils/navLevels.js'
 
-const settingsOpen = ref(false)
 const contentEl = ref(null)
 const showBackTop = ref(false)
 const route = useRoute()
@@ -44,7 +44,7 @@ function isNarrowScreen() {
 function onSwipeStart(e) {
   if (!isNarrowScreen() || e.touches.length !== 1) return
   // 都收起时只在歌单主页响应（右滑开侧栏、左滑开队列）；展开时任意页面可反向滑收起
-  if (!state.ui.sidebarOpen && !state.ui.queueOpen && route.path !== '/') return
+  if (!state.ui.sidebarOpen && !state.ui.queueOpen && !isFirstLevelPath(route.path)) return
   swipeStartX = e.touches[0].clientX
   swipeStartY = e.touches[0].clientY
   swipeTracking.value = true
@@ -83,7 +83,7 @@ function onSwipeEnd(e) {
     if (dx > 0) closeQueue()
     return
   }
-  if (route.path !== '/') return
+  if (!isFirstLevelPath(route.path)) return
   if (dx > 0) openSidebar()
   else openQueue()
 }
@@ -181,6 +181,15 @@ watch(
     showBackTop.value = false
   }
 )
+
+// 手机抽屉：只要路由发生变化就收起，避免从歌单进入最近播放/存储/报告后
+// 还压着一层侧栏（目标页内容从侧栏右侧露出来，看起来像布局错乱）。
+watch(
+  () => route.path,
+  () => {
+    if (state.ui.sidebarOpen) closeSidebar()
+  }
+)
 </script>
 
 <template>
@@ -192,14 +201,14 @@ watch(
       @touchend.passive="onSwipeEnd"
       @touchcancel.passive="onSwipeCancel"
     >
-      <Sidebar @open-settings="settingsOpen = true" @open-login="state.loginOpen = true" />
+      <Sidebar @open-settings="state.ui.settingsOpen = true" @open-login="state.loginOpen = true" />
       <div
         v-if="state.ui.sidebarOpen"
         class="drawer-backdrop"
         @click="closeSidebar"
       ></div>
       <main class="main">
-        <TopBar @open-settings="settingsOpen = true" />
+        <TopBar @open-settings="state.ui.settingsOpen = true" />
         <div ref="contentEl" class="content" @scroll.passive="onContentScroll">
           <RouterView />
         </div>
@@ -233,14 +242,14 @@ watch(
     <LoginDialog
       :open="state.loginOpen"
       @close="state.loginOpen = false"
-      @open-settings="settingsOpen = true"
+      @open-settings="state.ui.settingsOpen = true"
     />
     <DiagnosticsDialog />
     <AddToPlaylistDialog />
     <ActionSheet />
     <ShareDialog />
     <ConfirmDialog />
-    <SettingsDialog :open="settingsOpen" @close="settingsOpen = false" />
+    <SettingsDialog :open="state.ui.settingsOpen" @close="state.ui.settingsOpen = false" />
     <UnlockGate v-if="locked()" @unlocked="onUnlocked" />
     <Toasts />
   </div>

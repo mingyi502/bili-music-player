@@ -54,9 +54,10 @@ export function statsSummary(events, { days = 0, now = Date.now() } = {}) {
     const key = e.key || e.name || '?'
     let song = songMap.get(key)
     if (!song) {
-      song = { key, name: e.name || '', singers: e.singers || [], plays: 0, ms: 0 }
+      song = { key, name: e.name || '', singers: e.singers || [], cover: e.cover || '', plays: 0, ms: 0 }
       songMap.set(key, song)
     }
+    if (!song.cover && e.cover) song.cover = e.cover
     song.plays += 1
     song.ms += ms
     for (const name of e.singers || []) {

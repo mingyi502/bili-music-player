@@ -261,7 +261,7 @@ function onDeletePlaylist(pl) {
       <template v-if="store.isLoggedIn.value">
         <div
           class="playlist-item liked-item"
-          :class="{ active: state.playlist && state.playlist.id === 'liked' }"
+          :class="{ active: route.path === '/' && state.playlist && state.playlist.id === 'liked' }"
           @click="pickLiked"
         >
           <AppImage v-if="likedCover" :src="likedCover" alt="" :lazy="false" placeholder />
@@ -281,7 +281,7 @@ function onDeletePlaylist(pl) {
           v-for="al in state.albums"
           :key="al.mid || al.id"
           class="playlist-item"
-          :class="{ active: state.playlist && state.playlist.id === `album:${al.mid}` }"
+          :class="{ active: route.path.startsWith('/album/') && state.playlist && state.playlist.id === `album:${al.mid}` }"
           @click="pickAlbum(al)"
         >
           <AppImage :src="al.cover" alt="" placeholder />
@@ -301,7 +301,7 @@ function onDeletePlaylist(pl) {
             v-for="pl in store.createdPlaylists.value"
             :key="pl.id"
             class="playlist-item"
-            :class="{ active: state.playlist && state.playlist.id === pl.id }"
+            :class="{ active: route.path === '/' && state.playlist && state.playlist.id === pl.id }"
             @click="pickPlaylist(pl.id)"
           >
             <AppImage :src="pl.cover" alt="" placeholder />
@@ -321,7 +321,7 @@ function onDeletePlaylist(pl) {
             v-for="pl in store.collectedPlaylists.value"
             :key="pl.id"
             class="playlist-item"
-            :class="{ active: state.playlist && state.playlist.id === pl.id }"
+            :class="{ active: route.path === '/' && state.playlist && state.playlist.id === pl.id }"
             @click="pickPlaylist(pl.id)"
           >
             <AppImage :src="pl.cover" alt="" placeholder />

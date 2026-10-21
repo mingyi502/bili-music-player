@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Icon from '../components/Icon.vue'
 import AppImage from '../components/AppImage.vue'
 import SongRow from '../components/SongRow.vue'
@@ -20,6 +20,43 @@ const rows = computed(() => {
       )
     })
 })
+/** 大歌单分批渲染：首屏 80 行，滚到底部附近再追加，避免一次创建 600+ 行卡顿 */
+const RENDER_STEP = 80
+const renderLimit = ref(RENDER_STEP)
+const visibleRows = computed(() => rows.value.slice(0, renderLimit.value))
+const hasMoreRows = computed(() => rows.value.length > renderLimit.value)
+const loadMoreEl = ref(null)
+let moreObserver = null
+
+function disconnectMoreObserver() {
+  if (moreObserver) moreObserver.disconnect()
+  moreObserver = null
+}
+
+function connectMoreObserver() {
+  disconnectMoreObserver()
+  if (!hasMoreRows.value || !loadMoreEl.value || typeof IntersectionObserver === 'undefined') return
+  moreObserver = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting) || !hasMoreRows.value) return
+      renderLimit.value = Math.min(rows.value.length, renderLimit.value + RENDER_STEP)
+      nextTick(connectMoreObserver)
+    },
+    { rootMargin: '300px' }
+  )
+  moreObserver.observe(loadMoreEl.value)
+}
+
+function resetRenderLimit() {
+  renderLimit.value = RENDER_STEP
+  nextTick(connectMoreObserver)
+}
+
+onMounted(() => nextTick(connectMoreObserver))
+onBeforeUnmount(disconnectMoreObserver)
+watch(hasMoreRows, () => nextTick(connectMoreObserver))
+watch(() => playlist.value?.id, resetRenderLimit)
+watch(() => state.filter, resetRenderLimit)
 const progressText = computed(
   () => `${state.loading.matchDone}/${state.loading.matchTotal}`
 )
@@ -191,7 +228,7 @@ function onMore() {
     </div>
 
     <SongRow
-      v-for="row in rows"
+      v-for="row in visibleRows"
       :key="row.song.mid || row.song.id || row.index"
       :song="row.song"
       :index="row.index"
@@ -199,6 +236,9 @@ function onMore() {
       :selected="selected.has(row.song)"
       @toggle-select="toggleSelect(row.song)"
     />
+    <div v-if="hasMoreRows" ref="loadMoreEl" class="load-more-rows">
+      正在加载更多歌曲…
+    </div>
 
     <div v-if="selectMode" class="select-bar">
       <button class="btn ghost sm" @click="toggleSelectAll">{{ allSelected ? '取消全选' : '全选' }}</button>

@@ -1,7 +1,7 @@
 /**
  * Android WebView 调试桥（CDP）—— 真机 / 模拟器验证用。
  *
- * 前置（见 HANDOVER-LOCAL.md）：
+ * 前置（本机环境）：
  *   1) adb -H 127.0.0.1 -P 5037 -s <dev> shell pidof com.bilimusic.player
  *   2) adb -H 127.0.0.1 -P 5037 -s <dev> forward tcp:9333 localabstract:webview_devtools_remote_<pid>
  *

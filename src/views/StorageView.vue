@@ -83,6 +83,7 @@ async function onImport(e) {
           <button v-if="failed.length" class="btn ghost sm" style="margin-left: 8px" @click="retryFailedDownloads">重试失败</button>
         </div>
         <div v-for="item in state.downloadQueue" :key="item.key" class="st-row">
+          <AppImage class="st-cover" :src="item.song?.cover || state.matches[item.key]?.cover || ''" alt="" placeholder />
           <div class="st-main">
             <div class="st-name">{{ item.song?.name }}</div>
             <div class="st-meta">{{ item.song?.singers?.join(' / ') || '未知歌手' }}</div>

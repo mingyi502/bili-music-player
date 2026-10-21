@@ -4,7 +4,7 @@
 > 本文记录当前公开代码的架构、验证基线与已知限制；具体功能进度以 `ROADMAP.md` 与近期提交为准。
 > **P0–P8 全部完成；P5（评论与社交）与 P9（听歌识曲）按约定不做**（P9 有完整 spike 结论）。
 > `ROADMAP.md` 是**唯一进度事实来源**：功能清单、接口验证记录、变更记录、设备记录、测试基线都在里面。
-> 本机环境（JDK / adb / 代理 / 设备小抄）见 `HANDOVER-LOCAL.md`（**不入仓库**，若接手者用别的机器可忽略）。
+> 本机环境（JDK / adb / 代理 / 设备）请按自己的机器配置，不随仓库分发。
 
 ---
 
@@ -362,7 +362,7 @@ cd android && ./gradlew assembleDebug
 - 产物：`android/app/build/outputs/apk/debug/app-debug.apk`；
 - **命名约定**：复制为 `bili-music-player-v<版本>.apk`（当前 `v1.0.0`），放 `release/`（gitignore）；
 - `android/.gitignore` 已忽略 `app/src/main/assets/public` 与 `capacitor.config.json`；
-- 工具链 / 设备 / 代理细节见 `HANDOVER-LOCAL.md`。
+- 工具链 / 设备 / 代理细节按本机环境配置，不随仓库分发。
 
 ---
 
@@ -444,7 +444,7 @@ cd android && ./gradlew assembleDebug
 2. `npm install` → 按第 3 节起 5199 测试服务 → 依次运行平台/安全/e2e/UI 测试，核对第 2 节基线；
 3. 通读 `ROADMAP.md`：**第 5 节接口验证记录**（哪些接口可用/已失效/负结论）、
    **第 6/7 节进度与基线**、变更记录里的踩坑；
-4. 若要动真机：按 `HANDOVER-LOCAL.md` 准备 adb / JDK / 代理，用 `scripts/android-cdp.mjs` 调试 WebView；
+4. 若要动真机：在本机准备 adb / JDK / 代理，用 `scripts/android-cdp.mjs` 调试 WebView；
 5. 优先可做（按价值排序）：
    ① ~~登录健壮性 F1–F3~~（**2026-09-26 已完成**，见第 5 节第 36 条与第 10 节）；
    ② H3 小组件手动添加验证 + 截图；

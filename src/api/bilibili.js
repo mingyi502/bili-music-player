@@ -98,12 +98,21 @@ function mapResults(json) {
 /**
  * 关键词搜索视频。批量匹配时 B 站容易限流（HTTP 500 / -412），
  * 因此这里自带重试 + 退避，且每次重试都重新签名（wts 需要新鲜）。
+ *
+ * @param {object} opts
+ * @param {number} [opts.duration] 1=10 分钟内 / 2=10-30 分钟 / 3=30-60 / 4=>60；
+ *   歌曲匹配默认只搜 10 分钟内，过滤掉一小时循环、直播回放等长视频。
+ * @param {string} [opts.order] 排序：totalrank（综合，默认）/ click（播放量）/
+ *   pubdate（最新）。这里坚持综合排序，避免平台流量机制把高播放翻唱顶上来。
  */
-export async function searchVideo(keyword, userCookie, page = 1) {
+export async function searchVideo(keyword, userCookie, page = 1, { duration = 0, order = 'totalrank' } = {}) {
   let lastErr = null
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const query = await signWbi({ search_type: 'video', keyword, page })
+      const params = { search_type: 'video', keyword, page }
+      if (duration) params.duration = duration
+      if (order) params.order = order
+      const query = await signWbi(params)
       const { ok, status, json, text } = await biliFetchRaw(
         `/x/web-interface/wbi/search/type?${query}`,
         userCookie

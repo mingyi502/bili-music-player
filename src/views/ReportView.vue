@@ -2,7 +2,8 @@
 /** 听歌报告（P7.3 G4）：基于本地收听事件（bmp:listen-stats）的统计视图。 */
 import { computed, ref } from 'vue'
 import Icon from '../components/Icon.vue'
-import { state, statsFor, clearStats, askConfirm, toast } from '../store/index'
+import AppImage from '../components/AppImage.vue'
+import { state, statsFor, clearStats, askConfirm, toast, songKey } from '../store/index'
 import { formatListenDuration } from '../api/stats.js'
 
 const RANGES = [
@@ -19,6 +20,17 @@ const maxDay = computed(() => Math.max(1, ...summary.value.byDay.map((d) => d.pl
 const hourPct = (n) => (n > 0 ? Math.max(4, Math.round((n / maxHour.value) * 100)) : 0)
 const dayPct = (n) => (n > 0 ? Math.max(4, Math.round((n / maxDay.value) * 100)) : 0)
 const dayLabel = (day) => String(day).slice(5)
+
+/** 旧统计事件没有封面；从当前列表 / 历史 / 队列 / 匹配记录补齐 */
+function coverFor(s) {
+  if (s.cover) return s.cover
+  const hit =
+    state.history.find((h) => h.key === s.key)?.song ||
+    state.queue.find((q) => q.key === s.key)?.song ||
+    state.songs.find((x) => songKey(x) === s.key) ||
+    state.likedSongs.find((x) => songKey(x) === s.key)
+  return hit?.cover || state.matches[s.key]?.cover || ''
+}
 
 async function onClear() {
   const ok = await askConfirm({
@@ -84,6 +96,7 @@ async function onClear() {
         <div v-if="!summary.topSongs.length" class="rp-empty">该时段暂无记录</div>
         <div v-for="(s, i) in summary.topSongs" :key="s.key" class="rp-row">
           <div class="rp-rank">{{ i + 1 }}</div>
+          <AppImage class="rp-cover" :src="coverFor(s)" alt="" placeholder />
           <div class="rp-main">
             <div class="rp-name">{{ s.name }}</div>
             <div class="rp-meta">{{ (s.singers || []).join(' / ') || '未知歌手' }}</div>

@@ -42,6 +42,7 @@ export function recordListenStart(song, source = '') {
       key: songKey(song),
       name: song.name || '',
       singers: song.singers || [],
+      cover: song.cover || state.matches[songKey(song)]?.cover || '',
       source: source || state.player.source || '',
       at: Date.now(),
       ms: 0,

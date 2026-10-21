@@ -3,7 +3,25 @@ import { computed, ref } from 'vue'
 import Icon from './Icon.vue'
 import AppImage from './AppImage.vue'
 import SleepTimerButton from './SleepTimerButton.vue'
-import { state, store, togglePlay, next, prev, seekRatio, cycleMode, expandPlayer, switchCurrentSource, sourceFor, toggleQueue, favOf, favPending, toggleFav } from '../store/index'
+import {
+  state,
+  store,
+  togglePlay,
+  next,
+  prev,
+  seekRatio,
+  cycleMode,
+  expandPlayer,
+  switchCurrentSource,
+  sourceFor,
+  effectiveSourceFor,
+  currentActualSource,
+  openCandidateDialog,
+  toggleQueue,
+  favOf,
+  favPending,
+  toggleFav,
+} from '../store/index'
 
 const song = computed(() => store.currentSong.value)
 const match = computed(() => store.currentMatch.value)
@@ -19,9 +37,20 @@ const sub = computed(() => {
   return sourceLabel ? `${singer} · ${sourceLabel}` : singer
 })
 
-/** 这首歌当前会用的音源（含用户偏好，未播放时也能显示） */
+/** 按钮显示「偏好音源」；实际音源不同（如 QQ 回退 B 站）时在括号里补充 */
 const prefSource = computed(() => (song.value ? sourceFor(song.value) : 'bili'))
-const prefLabel = computed(() => (prefSource.value === 'qq' ? 'QQ音乐' : 'B站'))
+const prefLabel = computed(() => ({ qq: 'QQ音乐', bili: 'B站', local: '本地' })[prefSource.value] || 'B站')
+const actualSource = computed(() => (song.value ? effectiveSourceFor(song.value) : 'bili'))
+const actualLabel = computed(() => ({ qq: 'QQ音乐', bili: 'B站', local: '本地' })[actualSource.value] || 'B站')
+const displayLabel = computed(() =>
+  actualSource.value !== prefSource.value ? `${prefLabel.value}（实际${actualLabel.value}）` : prefLabel.value
+)
+const nextSource = computed(() => {
+  if (!song.value) return 'qq'
+  const base = currentActualSource(song.value) || sourceFor(song.value)
+  return base === 'qq' ? 'bili' : 'qq'
+})
+const nextLabel = computed(() => (nextSource.value === 'qq' ? 'QQ音乐' : 'B站'))
 
 const canSeek = computed(() => state.player.source === 'qq' || state.player.source === 'bili' || state.player.source === 'local')
 const modeLabel = computed(
@@ -179,13 +208,21 @@ function onUp() {
         <Icon name="refresh" :size="12" class="spin" /> 匹配中
       </span>
       <button
+        v-if="song && match && match.status === 'ok' && match.confidence && match.confidence !== 'high'"
+        class="badge warn"
+        :title="`${match.manual ? '手动匹配' : '自动匹配'}可信度${match.confidence === 'medium' ? '一般' : '较低'}${match.score != null ? `（${Math.round(match.score)} 分）` : ''}：点此重新选择 B 站视频`"
+        @click="openCandidateDialog(song)"
+      >
+        匹配存疑
+      </button>
+      <button
         v-if="song"
         class="src-btn"
         :class="prefSource"
-        :title="`当前音源：${prefLabel}。点击切换为${prefSource === 'qq' ? 'B站' : 'QQ音乐'}音源`"
+        :title="`偏好音源：${prefLabel}；当前实际：${actualLabel}。点击切换为${nextLabel}音源`"
         @click="switchCurrentSource"
       >
-        <Icon :name="prefSource === 'qq' ? 'qqMusic' : 'bilibili'" :size="14" /> {{ prefLabel }}
+        <Icon :name="prefSource === 'qq' ? 'qqMusic' : 'bilibili'" :size="14" /> {{ displayLabel }}
       </button>
       <a
         v-if="video"

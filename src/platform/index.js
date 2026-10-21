@@ -33,3 +33,18 @@ export async function initPlatform() {
   }
   return installed
 }
+
+/**
+ * 安装 Android 物理返回键监听（仅原生端）。
+ * handler(app) 由业务层提供；app 只暴露 minimizeApp 等必要能力。
+ */
+export async function initBackButton(handler) {
+  if (!isNative()) return null
+  try {
+    const { installBackButton } = await import('./native/back.js')
+    return await installBackButton(handler)
+  } catch (e) {
+    console.error('[platform] 返回键监听安装失败:', e)
+    return null
+  }
+}

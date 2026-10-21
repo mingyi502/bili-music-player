@@ -13,6 +13,8 @@ export const LS = {
   userData: 'bmp:userdata',
   /** 单曲音源偏好：{ [songKey]: 'qq' | 'bili' } */
   sourcePref: 'bmp:source-pref',
+  /** 用户为某首歌手动搜索并采用过的关键词（跨语言别名/原名） */
+  matchKeyword: 'bmp:match-keyword',
   /** 播放队列：{ songs: [...], index } */
   queue: 'bmp:queue',
   /** 最近播放（纯本地）：[{ key, song, playedAt }]，最新在前 */
@@ -50,6 +52,20 @@ export function songKey(song) {
   return song.mid || song.id || `${song.name}-${(song.singers || []).join('')}`
 }
 
+/**
+ * 记录「我喜欢的音乐」全量成员。QQ 的 IsSongFanByMid 在当前账号上可能返回
+ * code=1000（读不到），此时以已经成功拉取的「我喜欢」列表为准，避免红心全灭。
+ */
+export function setLikedMids(songs) {
+  const next = {}
+  for (const song of songs || []) {
+    if (!song) continue
+    next[songKey(song)] = true
+    if (song.mid) next[song.mid] = true
+  }
+  state.fav.liked = next
+}
+
 const savedHistory = loadLS(LS.history, [])
 
 /** 配置默认值：新增字段时与已存配置**合并**，保证老用户也能拿到新默认值 */
@@ -81,6 +97,8 @@ export const state = reactive({
   config: loadConfig(),
   /** 单曲音源偏好覆盖（用户在播放器上切换后记住） */
   sourcePref: loadLS(LS.sourcePref, {}),
+  /** 单曲匹配关键词覆盖：{ [songKey]: '用户搜索过的关键词' } */
+  matchKeywords: loadLS(LS.matchKeyword, {}),
   user: loadLS(LS.user, null),
   /** 最近一次登录方式：qr / web / cookie（启动时从 config 恢复，仅用于诊断展示） */
   loginMethod: '',
@@ -93,6 +111,8 @@ export const state = reactive({
     sidebarOpen: false,
     playerExpanded: false,
     queueOpen: false,
+    /** 设置弹窗（放在全局状态里，Android 返回键才能先关闭它） */
+    settingsOpen: false,
     /** 全屏播放器显示歌词（默认开，记住上次选择） */
     showLyrics: Boolean(loadLS(LS.lyricView, true)),
     /** 最近一次歌单导出（P7.4 G5，用于 UI 反馈/测试断言） */
@@ -111,7 +131,7 @@ export const state = reactive({
   /** 通用底部动作面板：openActionSheet({ title, items }) 打开 */
   actionSheet: { open: false, title: '', items: [] },
   /** 「我喜欢」状态缓存（P4.1）：{ [songKey]: boolean } + 进行中的 key */
-  fav: { map: {}, pending: {} },
+  fav: { map: {}, pending: {}, liked: {} },
   playlists: [],
   playlist: null,
   songs: [],
@@ -226,6 +246,14 @@ export function persistMatches() {
     localStorage.setItem(LS.matches, JSON.stringify(slim))
   } catch {
     /* 超出配额时放弃持久化，不影响本次使用 */
+  }
+}
+
+export function persistMatchKeywords() {
+  try {
+    localStorage.setItem(LS.matchKeyword, JSON.stringify(state.matchKeywords))
+  } catch {
+    /* 配额异常不打断匹配 */
   }
 }
 

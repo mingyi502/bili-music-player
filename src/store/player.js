@@ -2,12 +2,18 @@
  * 播放器：播放引擎（<audio> / 内嵌 iframe）、音源策略（默认 B 站）、B 站匹配、播放控制。
  */
 import { computed } from 'vue'
-import { state, songKey, LS, persistMatches, saveConfig } from './state.js'
+import { state, songKey, LS, persistMatches, persistMatchKeywords, saveConfig } from './state.js'
 import { toast } from './ui.js'
 import { pushError } from './errors.js'
 import { fetchSongUrl, fetchSongUrlInfo } from '../api/qq.js'
 import { searchVideo, playerUrl, fetchBiliAudio } from '../api/bilibili.js'
-import { pickBest, rankCandidates, parseDuration, buildKeyword } from '../utils/match.js'
+import {
+  rankCandidatesScored,
+  parseDuration,
+  buildKeyword,
+  MIN_SCORE,
+  scoreCandidate,
+} from '../utils/match.js'
 import { shouldIgnoreStaleTimeUpdate, SEEK_SETTLE_MS } from '../utils/seek.js'
 import { recordListenStart, recordListenProgress, flushStats } from './stats.js'
 
@@ -520,11 +526,38 @@ export function cancelSleepTimer() {
   toast('已关闭睡眠定时', 'info')
 }
 
-const currentMatch = computed(() => {
-  const song = currentSong.value
+/**
+ * 旧版本保存的匹配没有 score/confidence；按当前规则补算一次，
+ * 让「匹配存疑」也能覆盖历史错配（例如 Caramel Syndrome vs Caramel Drizzle Love）。
+ * 不写回 state.matches，避免 computed 内产生副作用。
+ */
+export function matchForDisplay(song) {
   if (!song) return null
-  return state.matches[songKey(song)] || null
-})
+  const m = state.matches[songKey(song)]
+  if (!m || m.status !== 'ok' || !m.title) return m || null
+  if (m.score != null && m.confidence) {
+    // 旧版手动选择会把 confidence 固定为 high；按分数重新校正，避免 45 分
+    // 的 1 分半剪辑也显示成「高可信」。
+    if (m.confidence === 'high' && m.score < 65) {
+      return { ...m, confidence: 'low', legacy: true }
+    }
+    return m
+  }
+  const c = scoreCandidate(
+    { title: m.title, author: m.author, play: m.play, duration: m.duration },
+    song
+  )
+  return {
+    ...m,
+    score: c.score,
+    confidence: c.confidence,
+    eligible: c.eligible,
+    reasons: c.reasons,
+    legacy: true,
+  }
+}
+
+const currentMatch = computed(() => matchForDisplay(currentSong.value))
 const currentVideo = computed(() => {
   const m = currentMatch.value
   return m && m.status === 'ok' ? m : null
@@ -548,7 +581,8 @@ const matchedCount = computed(
   () => state.songs.filter((s) => state.matches[songKey(s)]?.status === 'ok').length
 )
 
-function applyMatch(key, video, extra = {}) {  state.matches[key] = video
+function applyMatch(key, video, extra = {}) {
+  state.matches[key] = video
     ? {
         status: 'ok',
         bvid: video.bvid,
@@ -558,46 +592,192 @@ function applyMatch(key, video, extra = {}) {  state.matches[key] = video
         duration: video.duration,
         cover: video.cover,
         url: video.url,
+        score: Number.isFinite(extra.score) ? extra.score : undefined,
+        confidence: extra.confidence || 'high',
+        eligible: extra.eligible !== false,
+        reasons: Array.isArray(extra.reasons) ? extra.reasons : undefined,
         ...extra,
       }
     : { status: 'none', ...extra }
 }
 
-export async function searchCandidates(song, keyword) {
-  const kw = keyword?.trim() || buildKeyword(song)
-  const list = await searchVideo(kw, state.config.biliCookie)
-  let ranked = rankCandidates(list, song)
-  const best = pickBest(list, song)
-  if (best) return { ranked, best }
+/** 歌曲时长对应的 B 站搜索时长档位：1=10 分钟内，2=10-30 分钟，3=30-60，4=>60 */
+function durationBucket(song) {
+  const sec = Number(song?.interval) || 0
+  if (!sec) return 0
+  if (sec <= 10 * 60) return 1
+  if (sec <= 30 * 60) return 2
+  if (sec <= 60 * 60) return 3
+  return 4
+}
 
-  // 关键词没匹配上时，退化为「歌名」「歌名+主唱」再试，提高召回
-  const alternates = [song.name, `${song.name} ${(song.singers || [])[0] || ''}`.trim()]
-  for (const alt of alternates) {
-    if (!alt || alt === kw) continue
-    try {
-      const l2 = await searchVideo(alt, state.config.biliCookie)
-      const b2 = pickBest(l2, song)
-      const r2 = rankCandidates(l2, song)
-      if (b2) return { ranked: r2.length ? r2 : ranked, best: b2 }
-      if (!ranked.length && r2.length) ranked = r2
-    } catch {
-      /* 忽略，继续下一个 */
+/** 别名池：用户保存的搜索词 + QQ 元数据里的 title/subtitle + 标题里的双语分段 */
+function songAliasList(song) {
+  const out = []
+  const seen = new Set()
+  const add = (value) => {
+    const text = String(value || '').trim()
+    if (!text || seen.has(text)) return
+    seen.add(text)
+    out.push(text)
+  }
+  add(state.matchKeywords?.[songKey(song)])
+  for (const alias of song.aliases || []) add(alias)
+  const parts = String(song.name || '').split(/\s*[\/|｜]\s*/).filter(Boolean)
+  if (parts.length > 1) for (const part of parts) add(part)
+  return out
+}
+
+function mergeVideos(lists) {
+  const seen = new Set()
+  const out = []
+  for (const list of lists) {
+    for (const video of list || []) {
+      if (!video?.bvid || seen.has(video.bvid)) continue
+      seen.add(video.bvid)
+      out.push(video)
     }
   }
-  return { ranked, best: null }
+  return out
+}
+
+/**
+ * 搜索并打分。
+ *
+ * B 站默认按综合/流量排序，第一页经常被高播放翻唱或同歌手其它歌占满。
+ * 这里分三轮：
+ *  1) 基础关键词第 1 页（带时长档位，过滤长循环/直播回放）；
+ *  2) 最佳候选分数不高时补第 2 页；
+ *  3) 仍无合适结果时用「官方 / 完整版 / 高音质 / 歌名」变体补搜。
+ * 手动输入关键词时不做变体替换，只补第 2 页，尊重用户意图。
+ */
+export async function searchCandidates(song, keyword) {
+  const defaultKeyword = buildKeyword(song)
+  const explicit = keyword?.trim() || ''
+  const saved = state.matchKeywords?.[songKey(song)] || ''
+  // matchSong 也会把默认关键词传进来；只有用户真正改过关键词才算手动
+  const manual = Boolean(explicit) && explicit !== defaultKeyword
+  // 用户上一次为这首歌手动搜索成功过的关键词（例如日文原名）优先复用
+  const baseKeyword = manual ? explicit : saved || explicit || defaultKeyword
+  const aliases = songAliasList(song)
+  const rankedSong = aliases.length ? { ...song, aliases } : song
+  const duration = durationBucket(song)
+  const pages = []
+  let lastError = null
+
+  async function fetchPage(kw, page) {
+    try {
+      const list = await searchVideo(kw, state.config.biliCookie, page, {
+        duration,
+        order: 'totalrank',
+      })
+      pages.push(list)
+      return list
+    } catch (e) {
+      lastError = e
+      return []
+    }
+  }
+
+  function rankNow() {
+    const videos = mergeVideos(pages)
+    const scored = rankCandidatesScored(videos, rankedSong)
+    const best = scored.find((x) => x.eligible && x.score >= MIN_SCORE) || null
+    return { videos, scored, best }
+  }
+
+  await fetchPage(baseKeyword, 1)
+  let stateNow = rankNow()
+
+  // 第一页没有高分候选、或最佳候选时长明显不对（现场/TV/剪辑）：
+  // 补第二页（平台流量排序下原曲常在第二页）
+  if (!stateNow.best || stateNow.best.score < 80 || (stateNow.best.durationDiff ?? 0) > 30) {
+    await fetchPage(baseKeyword, 2)
+    stateNow = rankNow()
+  }
+
+  // 别名查询（日文原名 / 双语标题）：单独搜一轮，结果统一按别名参与打分。
+  // 只有基础搜索偏弱时才补，避免每首歌都多发请求。
+  if (!manual && aliases.length && (!stateNow.best || stateNow.best.score < 90)) {
+    const triedAlias = new Set([baseKeyword, defaultKeyword, song.name])
+    for (const alias of aliases.slice(0, 2)) {
+      if (!alias || triedAlias.has(alias)) continue
+      triedAlias.add(alias)
+      await fetchPage(alias, 1)
+      stateNow = rankNow()
+      if (stateNow.best && stateNow.best.score >= 85) break
+    }
+  }
+
+  // 仍偏弱或只是现场/TV版：用更贴近「原曲/官方音频」的关键词补搜
+  // （最多三次，避免触发风控）
+  if (!manual && (!stateNow.best || stateNow.best.score < 72 || (stateNow.best.durationDiff ?? 0) > 30)) {
+    const singer = (song.singers || [])[0] || ''
+    const albumHint = (String(song.album || '').match(/from\s+["“]?([^"”)]+)/i) || [])[1] || ''
+    const variants = [
+      `${song.name} ${singer} 官方`.trim(),
+      `${song.name} ${singer} 完整版`.trim(),
+      `${song.name} ${singer} 高音质`.trim(),
+      albumHint ? `${song.name} ${albumHint}`.trim() : '',
+      song.name,
+    ]
+    const tried = new Set([baseKeyword])
+    for (const alt of variants) {
+      if (!alt || tried.has(alt)) continue
+      tried.add(alt)
+      await fetchPage(alt, 1)
+      stateNow = rankNow()
+      if (stateNow.best && stateNow.best.score >= 72 && (stateNow.best.durationDiff ?? 0) <= 30) break
+    }
+  }
+
+  if (!stateNow.videos.length && lastError) throw lastError
+  return {
+    ranked: stateNow.scored.map((x) => x.video),
+    rankedScored: stateNow.scored,
+    best: stateNow.best?.video || null,
+    score: stateNow.best?.score,
+    confidence: stateNow.best?.confidence || 'low',
+    eligible: Boolean(stateNow.best),
+    reasons: stateNow.best?.reasons || [],
+  }
 }
 
 export async function matchSong(song, { silent = false } = {}) {
   const key = songKey(song)
   // 去重：同一首歌已有匹配在途时复用，避免 matchAll 与播放回退重复请求
   if (matchInflight.has(key)) return matchInflight.get(key)
+  const previous = state.matches[key]
   const keyword = buildKeyword(song)
   state.matches[key] = { status: 'loading', keyword }
   const task = (async () => {
     try {
-      const { ranked, best } = await searchCandidates(song, keyword)
-      applyMatch(key, best, { keyword, candidates: ranked.slice(0, 8), manual: false })
+      const { ranked, best, score, confidence, eligible, reasons } = await searchCandidates(song, keyword)
+      applyMatch(key, best, {
+        keyword,
+        candidates: ranked.slice(0, 8),
+        manual: false,
+        score,
+        confidence,
+        eligible,
+        reasons,
+      })
       persistMatches()
+      // 用户手动「重新匹配」且当前正在播放这首歌：新视频要立刻替换旧声音。
+      // 批量匹配 / 播放前自动匹配（silent）不触发，避免递归重播。
+      if (
+        !silent &&
+        best &&
+        previous?.bvid !== best.bvid &&
+        currentSong.value &&
+        songKey(currentSong.value) === key &&
+        state.player.playing
+      ) {
+        await replayCurrentSong(song, { forceRemote: true })
+      }
+      if (!silent && best && confidence !== 'high') {
+        toast(`《${song.name}》自动匹配可能不准确，可点搜索选择一个更合适的视频`, 'info')
+      }
       return best
     } catch (e) {
       const msg = e.message || '匹配失败'
@@ -641,7 +821,17 @@ export async function matchAll(concurrency = 2) {
   try {
     await Promise.all(Array.from({ length: Math.min(concurrency, songs.length) }, worker))
     const netErrors = songs.filter((s) => state.matches[songKey(s)]?.errorKind === 'network').length
-    toast(`匹配完成，成功 ${matchedCount.value}/${songs.length}`, 'success')
+    const lowConfidence = songs.filter((s) => {
+      const m = state.matches[songKey(s)]
+      return m?.status === 'ok' && m.confidence && m.confidence !== 'high'
+    }).length
+    toast(
+      `匹配完成，成功 ${matchedCount.value}/${songs.length}${lowConfidence ? `，${lowConfidence} 首存疑` : ''}`,
+      lowConfidence ? 'info' : 'success'
+    )
+    if (lowConfidence) {
+      toast(`有 ${lowConfidence} 首自动匹配可信度不高，建议点歌曲行的「搜索并选择」确认`, 'info')
+    }
     if (netErrors >= 5) {
       toast(
         `有 ${netErrors} 首因网络超时失败：B站请求被拦截或代理节点不稳，可给 B站/QQ 域名加 DIRECT 规则（详见 SECURITY.md）`,
@@ -655,16 +845,35 @@ export async function matchAll(concurrency = 2) {
 
 export async function rematchSingle(song, keyword) {
   const key = songKey(song)
+  const previous = state.matches[key]
+  const customKeyword = keyword?.trim()
+  if (customKeyword && customKeyword !== buildKeyword(song)) {
+    state.matchKeywords[key] = customKeyword
+    persistMatchKeywords()
+  }
   state.matches[key] = { status: 'loading', keyword: keyword || buildKeyword(song) }
   try {
-    const { ranked, best } = await searchCandidates(song, keyword)
+    const { ranked, best, score, confidence, eligible, reasons } = await searchCandidates(song, keyword)
     // 只有真正匹配到才标记为 manual（否则会被 matchAll 当成已完成而永久跳过）
     applyMatch(key, best, {
       keyword: keyword || buildKeyword(song),
       candidates: ranked.slice(0, 12),
       manual: Boolean(best),
+      score,
+      confidence,
+      eligible,
+      reasons,
     })
     persistMatches()
+    if (
+      best &&
+      previous?.bvid !== best.bvid &&
+      currentSong.value &&
+      songKey(currentSong.value) === key &&
+      state.player.playing
+    ) {
+      await replayCurrentSong(song, { forceRemote: true })
+    }
     toast(best ? `已重新匹配：${best.title}` : '没有找到合适的视频', best ? 'success' : 'error')
   } catch (e) {
     state.matches[key] = { status: 'error', error: e.message }
@@ -672,11 +881,98 @@ export async function rematchSingle(song, keyword) {
   }
 }
 
-export function setMatch(song, video) {
+/** 从当前歌单 / 播放队列 / 最近播放里找歌（换源不再只认 state.songs） */
+function findKnownSong(key) {
+  if (!key) return null
+  const inSongs = state.songs.find((s) => songKey(s) === key)
+  if (inSongs) return inSongs
+  const inQueue = state.queue.find((entry) => entry.key === key)?.song
+  if (inQueue) return inQueue
+  const inHistory = state.history.find((entry) => entry.key === key)?.song
+  if (inHistory) return inHistory
+  const current = currentSong.value
+  return current && songKey(current) === key ? current : null
+}
+
+/**
+ * 用当前队列/本地队列里的歌直接重播，不依赖它在 state.songs 中。
+ * forceRemote=true 时忽略本地下载，确保用户在弹窗里选的 B 站视频真正生效。
+ */
+async function replayCurrentSong(song, { forceRemote = false } = {}) {
+  if (!song) return false
+  const key = songKey(song)
+  let queueIndex = state.queue.findIndex((entry) => entry.key === key)
+  if (queueIndex < 0) {
+    if (state.player.index >= 0 && state.songs[state.player.index]) {
+      // 当前曲来自主列表，但队列里没有：按主列表重建队列（与 playIndex 一致）
+      state.queue = state.songs.map((s) => ({ key: songKey(s), song: s, from: 'list' }))
+      queueIndex = state.player.index
+    } else {
+      // 历史/搜索结果等临时曲目：补进队列，保留当前播放上下文
+      state.queue.push({ key, song, from: 'manual' })
+      queueIndex = state.queue.length - 1
+    }
+  }
+  state.player.queueIndex = queueIndex
+  const rowIndex = state.songs.findIndex((s) => songKey(s) === key)
+  const seq = ++playSeq
+  await startPlayback(song, rowIndex, seq, { forceRemote })
+  persistQueue()
+  return true
+}
+
+/** 当前这首歌实际在用的音源（iframe 归到 bili；local 表示本地文件） */
+export function currentActualSource(song) {
+  if (!song || !currentSong.value || songKey(currentSong.value) !== songKey(song)) return null
+  if (state.player.source === 'iframe') return 'bili'
+  if (state.player.source === 'qq' || state.player.source === 'bili' || state.player.source === 'local') {
+    return state.player.source
+  }
+  return null
+}
+
+/** UI 展示用：正在播放时显示实际音源，未播放时显示用户偏好 */
+export function effectiveSourceFor(song) {
+  return currentActualSource(song) || sourceFor(song)
+}
+
+/**
+ * 手动选择候选视频：写入匹配、切回 B 站音源，并在当前曲上立即重播。
+ * 返回是否成功找到歌曲。
+ */
+export async function setMatch(song, video, { replay = true, keyword = '' } = {}) {
+  if (!song || !video?.bvid) return false
   const key = songKey(song)
   const prev = state.matches[key] || {}
-  applyMatch(key, video, { keyword: prev.keyword || buildKeyword(song), candidates: prev.candidates || [], manual: true })
+  const customKeyword = keyword?.trim() || ''
+  if (customKeyword && customKeyword !== buildKeyword(song)) {
+    state.matchKeywords[key] = customKeyword
+    persistMatchKeywords()
+  }
+  const usedKeyword = customKeyword || prev.keyword || state.matchKeywords[key] || buildKeyword(song)
+  const scored = Number.isFinite(video.matchScore)
+    ? { score: video.matchScore, confidence: video.matchConfidence || 'low', reasons: video.matchReasons || [] }
+    : scoreCandidate(
+        { title: video.title, author: video.author, play: video.play, duration: video.duration },
+        song
+      )
+  applyMatch(key, video, {
+    keyword: usedKeyword,
+    candidates: prev.candidates || [],
+    manual: true,
+    score: Number.isFinite(scored.score) ? scored.score : prev.score,
+    confidence: scored.confidence || 'low',
+    eligible: true,
+    reasons: ['手动选择', ...(scored.reasons || [])],
+  })
+  // 手动选 B 站视频 → 这首歌的偏好切回 B 站（覆盖之前的 QQ / 本地播放偏好）
+  state.sourcePref[key] = 'bili'
+  persistSourcePref()
   persistMatches()
+  if (replay && currentSong.value && songKey(currentSong.value) === key) {
+    await replayCurrentSong(song, { forceRemote: true })
+  }
+  return true
 }
 
 export async function openCandidateDialog(song) {
@@ -687,15 +983,26 @@ export async function openCandidateDialog(song) {
     open: true,
     songKey: key,
     songName: song.name,
-    keyword: prev.keyword || buildKeyword(song),
+    keyword: prev.keyword || state.matchKeywords[key] || buildKeyword(song),
     loading: true,
     list: [],
     requestId,
+    currentBvid: prev.status === 'ok' ? prev.bvid : '',
+    suitable: true,
+    bestScore: null,
   }
   try {
-    const { ranked } = await searchCandidates(song, state.candidateDialog.keyword)
+    const { rankedScored } = await searchCandidates(song, state.candidateDialog.keyword)
     if (state.candidateDialog.requestId !== requestId) return
-    state.candidateDialog.list = ranked.slice(0, 20)
+    state.candidateDialog.suitable = rankedScored.some((x) => x.eligible && x.score >= MIN_SCORE)
+    state.candidateDialog.bestScore = rankedScored.find((x) => x.eligible)?.score ?? null
+    state.candidateDialog.list = rankedScored.slice(0, 20).map((x) => ({
+      ...x.video,
+      matchScore: x.score,
+      matchEligible: x.eligible,
+      matchConfidence: x.confidence,
+      matchReasons: x.reasons,
+    }))
   } catch (e) {
     if (state.candidateDialog.requestId === requestId) toast(e.message, 'error')
   } finally {
@@ -709,10 +1016,27 @@ export async function searchInDialog(keyword) {
   const requestId = (state.candidateDialog.requestId || 0) + 1
   state.candidateDialog.requestId = requestId
   try {
-    const song = state.songs.find((s) => songKey(s) === state.candidateDialog.songKey)
-    const { ranked } = await searchCandidates(song, keyword)
+    const song = findKnownSong(state.candidateDialog.songKey)
+    if (!song) {
+      toast('找不到这首歌，请从歌单或播放队列重新打开', 'error')
+      return
+    }
+    const custom = String(keyword || '').trim()
+    if (custom && custom !== buildKeyword(song)) {
+      state.matchKeywords[state.candidateDialog.songKey] = custom
+      persistMatchKeywords()
+    }
+    const { rankedScored } = await searchCandidates(song, keyword)
     if (state.candidateDialog.requestId !== requestId) return
-    state.candidateDialog.list = ranked.slice(0, 20)
+    state.candidateDialog.suitable = rankedScored.some((x) => x.eligible && x.score >= MIN_SCORE)
+    state.candidateDialog.bestScore = rankedScored.find((x) => x.eligible)?.score ?? null
+    state.candidateDialog.list = rankedScored.slice(0, 20).map((x) => ({
+      ...x.video,
+      matchScore: x.score,
+      matchEligible: x.eligible,
+      matchConfidence: x.confidence,
+      matchReasons: x.reasons,
+    }))
   } catch (e) {
     if (state.candidateDialog.requestId === requestId) toast(e.message, 'error')
   } finally {
@@ -722,6 +1046,18 @@ export async function searchInDialog(keyword) {
 
 export function closeCandidateDialog() {
   state.candidateDialog.open = false
+}
+
+/** 候选弹窗点击某条：历史/队列/主列表里的歌都能换源并立即重播 */
+export async function chooseCandidate(video) {
+  const song = findKnownSong(state.candidateDialog.songKey)
+  const keyword = state.candidateDialog.keyword
+  closeCandidateDialog()
+  if (!song) {
+    toast('找不到这首歌，请从歌单或播放队列重新打开', 'error')
+    return false
+  }
+  return setMatch(song, video, { keyword })
 }
 
 /**
@@ -743,20 +1079,42 @@ function persistSourcePref() {
 
 /** 设定某首歌的音源偏好并立即重播（用户在播放器上点击切换） */
 export async function useSource(song, source) {
-  if (!song || (source !== 'qq' && source !== 'bili')) return
+  if (!song || (source !== 'qq' && source !== 'bili')) return false
   state.sourcePref[songKey(song)] = source
   persistSourcePref()
+  // 当前正在播放的歌可能来自历史 / 搜索 / 播放队列，不在 state.songs 里。
+  // 先按当前队列直接重播，避免「提示已切换但实际没反应」。
+  if (currentSong.value && songKey(currentSong.value) === songKey(song)) {
+    return replayCurrentSong(song, { forceRemote: true })
+  }
   const idx = state.songs.findIndex((s) => songKey(s) === songKey(song))
-  if (idx >= 0) await playIndex(idx)
+  if (idx >= 0) {
+    await playIndex(idx)
+    return true
+  }
+  return false
 }
 
 /** 在当前播放的歌曲上切换音源（B站 ⇄ QQ） */
 export async function switchCurrentSource() {
   const song = currentSong.value
   if (!song) return
+  // 按「偏好音源」切换，保证按钮文案/持久化值始终可逆；
+  // 实际音源可能因 QQ 受限回退为 B 站，播放条会用「实际B站」标注。
   const next = sourceFor(song) === 'qq' ? 'bili' : 'qq'
-  toast(`已切换为 ${next === 'qq' ? 'QQ音乐' : 'B站'} 音源`, 'info')
-  await useSource(song, next)
+  const ok = await useSource(song, next)
+  if (!ok) {
+    toast('切换失败：这首歌不在当前播放上下文里', 'error')
+    return
+  }
+  const after = currentActualSource(song)
+  if (!after) {
+    toast('切换失败：没有可用的音源', 'error')
+  } else if (next === 'qq' && after !== 'qq') {
+    toast('QQ音乐直链不可用，已回退为 B 站音源；可稍后再次切到 QQ 重试', 'error')
+  } else {
+    toast(`已切换为 ${after === 'qq' ? 'QQ音乐' : after === 'local' ? '本地' : 'B站'} 音源`, 'info')
+  }
 }
 
 /**
@@ -797,8 +1155,12 @@ async function playFromBili(song, index, seq, { isFallback = false } = {}) {
   await playViaBiliIframe(song, index, seq)
 }
 
-/** 真正开始播放一首歌（歌单行入口与队列入口共用） */
-async function startPlayback(song, rowIndex, seq) {
+/**
+ * 真正开始播放一首歌（歌单行入口与队列入口共用）。
+ * forceRemote：用户显式选择 B 站视频 / 切换音源时忽略本地下载，
+ * 否则「已下载」的歌曲会一直播本地文件，表现为换源无效。
+ */
+async function startPlayback(song, rowIndex, seq, { forceRemote = false } = {}) {
   state.player.index = rowIndex
   state.player.playing = true
   state.player.loading = true
@@ -811,12 +1173,12 @@ async function startPlayback(song, rowIndex, seq) {
   if (audioEl) audioEl.pause()
 
   // 本地音乐（导入）与已下载歌曲：直接播本地文件（离线可用，P6）
-  if (song.localUri) {
+  if (!forceRemote && song.localUri) {
     playAudioSource(song.localUri, 'local', song, seq)
     return
   }
   const dl = state.downloads[songKey(song)]
-  if (dl?.status === 'done' && dl.uri) {
+  if (!forceRemote && dl?.status === 'done' && dl.uri) {
     playAudioSource(dl.uri, 'local', song, seq)
     return
   }

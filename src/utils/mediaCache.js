@@ -34,7 +34,9 @@ export function httpsify(url) {
 const resolved = new Map()
 // 进行中的请求，避免同一张图重复下载
 const inflight = new Map()
-const MAX_ENTRIES = 300
+// 「我喜欢」最多可一次渲染 600+ 行；缓存过小会在滚动/进入歌单时淘汰并 revoke
+// 仍在页面上的 blob URL，表现为整列封面变成裂图。留足一个大型歌单的余量。
+const MAX_ENTRIES = 1200
 // 原生解析器返回的 blob: URL 由本模块拥有，淘汰时主动释放底层 Blob。
 const ownedObjectUrls = new Set()
 let cacheGeneration = 0

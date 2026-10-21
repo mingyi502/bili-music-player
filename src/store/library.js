@@ -2,7 +2,7 @@
  * 音乐库：歌单导入、「我喜欢」、收藏专辑、歌单/专辑加载。
  */
 import { computed } from 'vue'
-import { state, LS, loadLS, persistConfig, persistUserData } from './state.js'
+import { state, LS, loadLS, persistConfig, persistUserData, setLikedMids } from './state.js'
 import { toast } from './ui.js'
 import { recordError, pushError } from './errors.js'
 import { pause, setQueueFromSongs } from './player.js'
@@ -129,6 +129,7 @@ async function doRefreshLikedSongs({ silent = false } = {}) {
       }
     }
     state.likedSongs = songs
+    setLikedMids(songs)
     state.likedTotal = total || songs.length
     state.likedCount = total || songs.length
     persistUserData()
@@ -225,6 +226,7 @@ export async function showLiked() {
     liked: true,
   }
   state.songs = [...state.likedSongs]
+  setLikedMids(state.likedSongs)
   setQueueFromSongs(state.songs)
   state.player.index = -1
   pause()

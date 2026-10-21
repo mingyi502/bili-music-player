@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import Icon from '../components/Icon.vue'
+import AppImage from '../components/AppImage.vue'
 import { state, playLocalQueue, togglePlay, clearHistory, askConfirm } from '../store/index'
 
 const history = computed(() => state.history)
@@ -116,6 +117,11 @@ function fmtTime(ts) {
           </button>
         </div>
         <div class="track">
+          <AppImage
+            :src="item.song.cover || state.matches[item.key]?.cover || ''"
+            alt=""
+            placeholder
+          />
           <div style="min-width: 0">
             <div class="t-name">{{ item.song.name }}</div>
             <div class="t-singer">{{ item.song.singers?.join(' / ') || '未知歌手' }}</div>

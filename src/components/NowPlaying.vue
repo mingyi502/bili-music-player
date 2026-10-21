@@ -7,6 +7,7 @@ import LyricLine from './LyricLine.vue'
 import SleepTimerButton from './SleepTimerButton.vue'
 import { useImage } from '../utils/mediaCache'
 import { findLineIndex, lyricDurationMismatch, toLyricTime, toSeekTime } from '../utils/lrc'
+import { decidePlayerSwipe } from '../utils/playerSwipe.js'
 import { hasMediaControl } from '../core/mediaControl.js'
 import {
   state,
@@ -22,6 +23,8 @@ import {
   openCandidateDialog,
   switchCurrentSource,
   sourceFor,
+  effectiveSourceFor,
+  currentActualSource,
   toggleQueue,
   loadLyric,
   lyricOffsetFor,
@@ -77,10 +80,22 @@ watch(
   { immediate: true }
 )
 
+const match = computed(() => store.currentMatch.value)
 const video = computed(() => store.currentVideo.value)
 const cover = computed(() => song.value?.cover || video.value?.cover || '')
-/** 这首歌当前会用的音源（含用户偏好） */
+/** 按钮显示偏好音源；实际音源不同（如 QQ 回退 B站）时补充括号说明 */
 const prefSource = computed(() => (song.value ? sourceFor(song.value) : 'bili'))
+const prefLabel = computed(() => ({ qq: 'QQ音乐', bili: 'B站', local: '本地' })[prefSource.value] || 'B站')
+const actualSource = computed(() => (song.value ? effectiveSourceFor(song.value) : 'bili'))
+const actualLabel = computed(() => ({ qq: 'QQ音乐', bili: 'B站', local: '本地' })[actualSource.value] || 'B站')
+const displayLabel = computed(() =>
+  actualSource.value !== prefSource.value ? `${prefLabel.value}（实际${actualLabel.value}）` : prefLabel.value
+)
+const nextSource = computed(() => {
+  if (!song.value) return 'qq'
+  const base = currentActualSource(song.value) || sourceFor(song.value)
+  return base === 'qq' ? 'bili' : 'qq'
+})
 
 /** 下载状态（P6，仅 App 显示入口） */
 const canDownload = computed(() => hasDownloads())
@@ -188,7 +203,9 @@ function retryLyric() {
 // 左右滑动切换：左滑看歌词、右滑回封面；下滑收起播放器（触屏）
 let touchStartX = 0
 let touchStartY = 0
+let touchInLyrics = false
 function onTouchStart(e) {
+  touchInLyrics = Boolean(e.target?.closest?.('.np-lyric-list'))
   touchStartX = e.changedTouches?.[0]?.clientX || 0
   touchStartY = e.changedTouches?.[0]?.clientY || 0
 }
@@ -197,12 +214,18 @@ function onTouchEnd(e) {
   const y = e.changedTouches?.[0]?.clientY || 0
   const dx = x - touchStartX
   const dy = y - touchStartY
-  // 纵向明显下滑（超过 70px 且垂直位移大于水平位移 1.4 倍）：收起播放器
-  if (dy > 70 && Math.abs(dy) > Math.abs(dx) * 1.4) {
+  const action = decidePlayerSwipe({
+    dx,
+    dy,
+    inLyrics: touchInLyrics,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  })
+  if (action === 'collapse') {
     collapsePlayer()
     return
   }
-  if (Math.abs(dx) > 60) showLyrics.value = dx < 0
+  if (action === 'lyrics') showLyrics.value = true
+  else if (action === 'cover') showLyrics.value = false
 }
 
 const barEl = ref(null)
@@ -431,7 +454,7 @@ function onUp() {
             v-if="song"
             class="icon-btn np-act"
             :class="prefSource"
-            :title="`当前音源：${prefSource === 'qq' ? 'QQ音乐' : 'B站'}，点击切换`"
+            :title="`偏好音源：${prefLabel}；当前实际：${actualLabel}，点击切换为${nextSource === 'qq' ? 'QQ音乐' : 'B站'}`"
             @click="switchCurrentSource"
           >
             <Icon :name="prefSource === 'qq' ? 'qqMusic' : 'bilibili'" :size="20" class="np-src-icon" />
@@ -448,7 +471,15 @@ function onUp() {
         </div>
         <span v-if="state.player.source === 'local'" class="badge ok">本地播放</span>
         <span v-if="state.player.source === 'iframe'" class="badge loading">内嵌播放（不可拖动）</span>
-        <span v-else-if="state.player.loading && state.player.loadingText" class="badge loading">
+        <button
+          v-if="match && match.status === 'ok' && match.confidence && match.confidence !== 'high'"
+          class="badge warn"
+          :title="`${match.manual ? '手动匹配' : '自动匹配'}可信度${match.confidence === 'medium' ? '一般' : '较低'}${match.score != null ? `（${Math.round(match.score)} 分）` : ''}：点此重新选择 B 站视频`"
+          @click.stop="openCandidateDialog(song)"
+        >
+          匹配存疑
+        </button>
+        <span v-if="state.player.loading && state.player.loadingText" class="badge loading">
           <span class="spin"><Icon name="refresh" :size="12" /></span> {{ state.player.loadingText }}
         </span>
         <span v-if="state.player.fallbackReason" class="np-hint">{{ state.player.fallbackReason }}</span>

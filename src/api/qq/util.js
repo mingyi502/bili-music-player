@@ -71,10 +71,17 @@ export function isLikedDir(d) {
 
 export function mapSong(s) {
   const albumMid = s.album?.mid || s.albummid || ''
+  const name = s.name || s.title || s.songname || ''
+  const aliases = [...new Set(
+    [s.title, s.subtitle, s.titleDetail, s.transname, s.nameTrans]
+      .map((x) => String(x || '').trim())
+      .filter((x) => x && x !== name)
+  )]
   return {
     id: String(s.id || s.songid || ''),
     mid: s.mid || s.songmid || '',
-    name: s.name || s.title || s.songname || '',
+    name,
+    aliases,
     singers: (s.singer || []).map((x) => (typeof x === 'string' ? x : x.name)).filter(Boolean),
     album: s.album?.name || s.albumname || '',
     albumMid,

@@ -1,6 +1,7 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useImage } from '../utils/mediaCache'
+import { observeImage, unobserveImage } from '../utils/imageObserver.js'
 
 const props = defineProps({
   src: { type: String, default: '' },
@@ -10,8 +11,12 @@ const props = defineProps({
   placeholder: { type: Boolean, default: false },
 })
 
+// 懒加载：649 首歌单一次性解析全部原生图片会卡顿；只解析视口附近（200px 预加载）。
+const imgEl = ref(null)
+const shouldLoad = ref(!props.lazy || typeof IntersectionObserver === 'undefined')
+
 // 解析结果（Web 端首帧即为最终地址；移动端会异步更新为本地 blob URL）
-const resolved = useImage(() => props.src)
+const resolved = useImage(() => (shouldLoad.value ? props.src : ''))
 // 加载失败：保留占位、不显示裂图（与原实现一致）
 const broken = ref(false)
 // 网络抖动导致的偶发失败自动重试，避免「失败一次就永久空白」
@@ -28,7 +33,8 @@ const showPlaceholder = computed(
 // 浏览器/WebView 对空 src 或加载失败会画一个"裂图"小图标（naturalWidth=0），
 // 会盖在我们的音符占位上面；所以占位时改用 1x1 透明像素，让 img 处于"已加载"状态。
 const BLANK_PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-const imgSrc = computed(() => (showPlaceholder.value ? BLANK_PX : resolved.value))
+// 原生端首帧 resolved 还是空串；此时给 1x1 透明像素，避免浏览器画出裂图图标。
+const imgSrc = computed(() => (!resolved.value || showPlaceholder.value ? BLANK_PX : resolved.value))
 
 // ⚠️ 移动端首帧 src 为空，浏览器会对空 src 触发 error；此时**不能**标记为失败，
 // 否则图片即便随后加载成功也会被 visibility:hidden 隐藏（曾导致 B站封面全部不显示）
@@ -60,11 +66,20 @@ watch(resolved, () => {
 
 onBeforeUnmount(() => {
   if (retryTimer) clearTimeout(retryTimer)
+  unobserveImage(imgEl.value)
+})
+
+onMounted(() => {
+  if (shouldLoad.value || !imgEl.value || typeof IntersectionObserver === 'undefined') return
+  observeImage(imgEl.value, () => {
+    shouldLoad.value = true
+  })
 })
 </script>
 
 <template>
   <img
+    ref="imgEl"
     :key="attempt"
     class="app-img"
     :class="{ broken, ph: showPlaceholder }"

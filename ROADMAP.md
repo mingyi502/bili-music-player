@@ -1,7 +1,7 @@
 # ROADMAP — QQ 音乐能力扩展
 
 > 基线：分支 `feat/android`，起始提交 `563eeb9`
-> 配套：`HANDOVER.md`（项目交接）、`HANDOVER-LOCAL.md`（本机环境，不入仓）
+> 配套：`HANDOVER.md`（项目交接）；本机环境自行配置，不入仓。
 > 本文件是功能扩展的**唯一进度事实来源**：每完成一个工作项，更新状态与验收证据。
 
 ## 0. 目标与原则
@@ -499,4 +499,4 @@
 | 2026-09-26 | 手机（Android 真机） | P5 E5 关注歌手：设置页按需加载 → 19 位（廻花/AJR/…），头像与歌手页跳转入口正常 | 通过 |
 
 复验工具：`scripts/android-cdp.mjs`（`list` / `eval <expr.js>` / `shot <out.png>`，Node ≥ 22），
-前置 adb forward 步骤见 `HANDOVER-LOCAL.md`。真机（Android 真机）待后续原生功能（P1.4b / B4 / H2 / H3）一并验收。
+前置 adb forward 步骤按本机环境配置。真机（Android 真机）待后续原生功能（P1.4b / B4 / H2 / H3）一并验收。

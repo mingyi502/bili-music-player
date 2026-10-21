@@ -2,7 +2,8 @@
 import { computed, ref, watch } from 'vue'
 import Icon from './Icon.vue'
 import AppImage from './AppImage.vue'
-import { state, searchInDialog, closeCandidateDialog, setMatch, songKey } from '../store/index'
+import { state, searchInDialog, closeCandidateDialog, chooseCandidate } from '../store/index'
+import { MIN_SCORE } from '../utils/match.js'
 
 const dlg = computed(() => state.candidateDialog)
 const keyword = ref('')
@@ -22,9 +23,13 @@ function fmtNum(n) {
 }
 
 function choose(video) {
-  const song = state.songs.find((s) => songKey(s) === dlg.value.songKey)
-  if (song) setMatch(song, video)
-  closeCandidateDialog()
+  chooseCandidate(video)
+}
+
+function scoreLabel(v) {
+  const n = Number(v.matchScore)
+  if (!Number.isFinite(n)) return ''
+  return `${Math.round(n)} 分`
 }
 </script>
 
@@ -41,6 +46,9 @@ function choose(video) {
           <Icon :name="dlg.loading ? 'refresh' : 'search'" :size="15" :class="{ spin: dlg.loading }" /> 搜索
         </button>
       </div>
+      <div v-if="!dlg.loading && !dlg.suitable" class="candidate-tip">
+        没有找到 ≥{{ MIN_SCORE }} 分的可自动匹配原曲；可尝试输入日文原名 / 罗马音，或从下方手动选择。
+      </div>
       <div class="dialog-body">
         <div v-if="dlg.loading" class="center-msg" style="height: 200px">
           <span class="spin"><Icon name="refresh" :size="30" /></span>
@@ -53,11 +61,21 @@ function choose(video) {
             v-for="v in dlg.list"
             :key="v.bvid"
             class="candidate"
+            :class="{ current: v.bvid === dlg.currentBvid, ineligible: v.matchEligible === false }"
             @click="choose(v)"
           >
             <AppImage :src="v.cover" alt="" />
             <div class="c-text">
-              <div class="c-title">{{ v.title }}</div>
+              <div class="c-title">
+                <span class="c-title-text">{{ v.title }}</span>
+                <span v-if="v.bvid === dlg.currentBvid" class="c-tag current-tag">当前</span>
+                <span
+                  v-if="v.matchScore != null"
+                  class="c-tag"
+                  :class="v.matchEligible && v.matchScore >= MIN_SCORE ? 'ok-tag' : 'warn-tag'"
+                  :title="(v.matchReasons || []).join(' · ')"
+                >{{ scoreLabel(v) }}</span>
+              </div>
               <div class="c-sub">UP：{{ v.author }} · {{ fmtNum(v.play) }} 播放 · {{ v.duration }}</div>
             </div>
           </div>

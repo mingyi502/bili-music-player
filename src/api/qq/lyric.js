@@ -102,6 +102,9 @@ export async function fetchLyric(songmid, cookie, uin) {
     12000
   )
   const code = data.retcode ?? data.code ?? 0
+  if (code === -1901 || code === 1901) {
+    throw new Error('QQ 音乐暂无歌词（冷门或未上架曲目常见）')
+  }
   if (code !== 0) throw new Error(`歌词接口返回 code=${code}${data.subcode ? `/${data.subcode}` : ''}`)
   return { lyric: decodeBase64Utf8(data.lyric), trans: decodeBase64Utf8(data.trans), roma: '', qrc: false, source: 'legacy' }
 }

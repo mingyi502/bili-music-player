@@ -689,10 +689,10 @@ console.log('\n=== 源码回归守卫 ===')
       const queueSrc = readFileSync(new URL('../src/components/QueuePanel.vue', import.meta.url), 'utf8')
       const cssSrc = readFileSync(new URL('../src/styles/main.css', import.meta.url), 'utf8')
       log(
-        '侧栏手势：右滑开（仅歌单主页）+ 左滑开队列 + 反向滑收（任意页面）',
+        '侧栏手势：右滑开（一级页面，含最近播放/报告）+ 左滑开队列 + 反向滑收（任意页面）',
         /function isNarrowScreen\(\)/.test(appSrc) &&
           /matchMedia\('\(max-width: 768px\)'\)/.test(appSrc) &&
-          /route\.path !== '\/'/.test(appSrc) &&
+          /isFirstLevelPath\(route\.path\)/.test(appSrc) &&
           /Math\.abs\(dx\) < 60 \|\| Math\.abs\(dx\) <= Math\.abs\(dy\) \* 1\.4/.test(appSrc) &&
           /if \(state\.ui\.sidebarOpen\) \{\s*if \(dx < 0\) closeSidebar\(\)/.test(appSrc) &&
           /if \(state\.ui\.queueOpen\) \{\s*if \(dx > 0\) closeQueue\(\)/.test(appSrc) &&

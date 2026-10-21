@@ -723,8 +723,8 @@ async function evaluate(expression, { awaitPromise = false } = {}) {
         JSON.stringify(swipeDrawer)
       )
       log(
-        '非主界面左右滑不打开抽屉/队列',
-        swipeDrawer.otherOpened === false && swipeDrawer.otherQueueOpened === false,
+        '一级页面（最近播放）右滑可打开抽屉；左滑不打开队列',
+        swipeDrawer.otherOpened === true && swipeDrawer.otherQueueOpened === false,
         JSON.stringify(swipeDrawer)
       )
       log('主界面左滑打开播放队列（触屏手势）', swipeDrawer.queueOpened === true, JSON.stringify(swipeDrawer))

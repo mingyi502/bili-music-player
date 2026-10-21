@@ -140,8 +140,17 @@ function fmtNum(n) {
       <span v-if="match && match.status === 'ok'" class="badge" :class="match.manual ? 'manual' : 'ok'">
         {{ match.manual ? '手动' : '自动' }}
       </span>
-      <span v-else-if="match && match.status === 'loading'" class="badge loading">…</span>
-      <span v-else class="badge none">—</span>
+      <button
+        v-if="match && match.status === 'ok' && match.confidence && match.confidence !== 'high'"
+        class="badge warn"
+        :title="`自动匹配可信度${match.confidence === 'medium' ? '一般' : '较低'}${match.score != null ? `（${Math.round(match.score)} 分）` : ''}：点击重新选择`"
+        @click.stop="openCandidateDialog(song)"
+      >
+        存疑
+      </button>
+      <span v-if="match && match.status === 'loading'" class="badge loading">…</span>
+      <span v-else-if="match && match.status === 'error'" class="badge err">!</span>
+      <span v-else-if="!match || match.status === 'none'" class="badge none">—</span>
     </div>
 
     <div v-if="!selectable" class="row-actions" @click.stop>
